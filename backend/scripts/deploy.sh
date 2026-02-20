@@ -78,6 +78,17 @@ else
     exit 1
 fi
 
+# Initialize database schema and seed data
+echo ""
+echo "🗄️  Initializing database..."
+echo "   - Running database migrations and seeding..."
+if docker-compose exec -T backend npm run seed; then
+    echo -e "${GREEN}✅ Database initialized successfully${NC}"
+else
+    echo -e "${RED}❌ Database seeding failed. Check logs with: docker-compose logs backend${NC}"
+    exit 1
+fi
+
 # Show running containers
 echo ""
 echo "📊 Running containers:"
