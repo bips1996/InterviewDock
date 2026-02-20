@@ -26,12 +26,23 @@ export const errorHandler = (
     });
   }
 
-  // Log unexpected errors
+  // Log unexpected errors with full details
   console.error('ERROR 💥:', err);
+  console.error('Stack trace:', err.stack);
+  console.error('Request:', {
+    method: req.method,
+    path: req.path,
+    query: req.query,
+    body: req.body,
+  });
 
   return res.status(500).json({
     status: 'error',
     message: 'Internal server error',
+    ...(process.env.NODE_ENV === 'development' && {
+      error: err.message,
+      stack: err.stack,
+    }),
   });
 };
 

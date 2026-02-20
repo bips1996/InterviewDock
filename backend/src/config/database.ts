@@ -14,9 +14,14 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_DATABASE || 'interviewdock',
-  synchronize: process.env.NODE_ENV === 'development', // Auto-sync in dev only
-  logging: process.env.NODE_ENV === 'development',
+  synchronize: process.env.DB_SYNCHRONIZE === 'true' || process.env.NODE_ENV === 'development',
+  logging: process.env.DB_LOGGING === 'true' || process.env.NODE_ENV === 'development',
   entities: [Category, Technology, Question, Tag],
   migrations: [],
   subscribers: [],
+  // Add connection retry logic
+  extra: {
+    max: 10,
+    connectionTimeoutMillis: 5000,
+  },
 });
