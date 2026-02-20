@@ -278,12 +278,55 @@ npm start
 | DB_USERNAME | Database username | postgres |
 | DB_PASSWORD | Database password | postgres |
 | DB_DATABASE | Database name | interviewdock |
+| DB_SYNCHRONIZE | Auto-create tables (true/false) | NODE_ENV === 'development' |
+| DB_LOGGING | Enable SQL logging (true/false) | NODE_ENV === 'development' |
 | DEFAULT_PAGE_SIZE | Default pagination size | 20 |
 | MAX_PAGE_SIZE | Maximum pagination size | 100 |
+
+## Deployment
+
+### EC2 Deployment
+
+For detailed EC2 deployment instructions, see [EC2-DEPLOYMENT.md](EC2-DEPLOYMENT.md).
+
+**Quick EC2 Setup:**
+
+```bash
+# 1. Clone repository on EC2
+git clone <your-repo-url> PrepEasy
+cd PrepEasy/backend
+
+# 2. Run automated setup script
+./scripts/ec2-setup.sh
+
+# 3. Verify deployment
+curl "http://localhost:5001/api/questions?page=1&limit=1"
+```
+
+**Troubleshooting on EC2:**
+
+If you encounter issues (e.g., "Internal server error" or null values), run the diagnostics script:
+
+```bash
+./scripts/diagnose.sh
+```
+
+Common issues:
+- **Tables not created**: Set `DB_SYNCHRONIZE=true` in `.env` and restart
+- **Database not seeded**: Run `npm run seed`
+- **Connection failed**: Check PostgreSQL is running and credentials are correct
+
+See [EC2-DEPLOYMENT.md](EC2-DEPLOYMENT.md) for comprehensive troubleshooting guide.
+
+### Docker Deployment
+
+See [DOCKER.md](DOCKER.md) for Docker deployment instructions.
 
 ## Notes
 
 - This is a public API with no authentication
 - Database syncs automatically in development mode
-- Use migrations for production deployments
+- In production, set `DB_SYNCHRONIZE=true` for initial setup, then `false` for safety
+- Use migrations for production schema changes
 - Sample data includes React, Vue, Node.js, PostgreSQL questions
+

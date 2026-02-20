@@ -20,6 +20,8 @@ services:
   backend:
     environment:
       NODE_ENV: production
+      DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-false}
+      DB_LOGGING: ${DB_LOGGING:-false}
     deploy:
       resources:
         limits:
@@ -32,7 +34,8 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
-    # Skip seeding in production
+    # Skip seeding in production - run manually if needed
+    # docker-compose exec backend npm run seed
     command: node dist/index.js
     logging:
       driver: "json-file"

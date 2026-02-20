@@ -1,6 +1,6 @@
-# Multi-stage build for production optimization
+# Production-optimized Dockerfile
+# Does not include source files or dev dependencies
 
-# Stage 1: Build
 FROM node:18-alpine AS builder
 
 WORKDIR /app
@@ -9,18 +9,16 @@ WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
 
-# Install dependencies
-RUN npm ci --only=production && \
-    npm cache clean --force
+# Install all dependencies (including dev)
+RUN npm ci
 
 # Copy source code
 COPY src ./src
 
 # Build TypeScript
-RUN npm install --save-dev typescript @types/node && \
-    npm run build
+RUN npm run build
 
-# Stage 2: Production
+# Production stage
 FROM node:18-alpine
 
 WORKDIR /app
@@ -39,12 +37,6 @@ RUN npm ci --only=production && \
 # Copy built application from builder
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 
-# For development/seeding: Copy source files and install ts-node
-# Comment out these lines for production-only builds
-COPY --chown=nodejs:nodejs src ./src
-COPY --chown=nodejs:nodejs tsconfig.json ./
-RUN npm install --save-dev ts-node typescript @types/node
-
 # Switch to non-root user
 USER nodejs
 
@@ -53,7 +45,7 @@ EXPOSE 5001
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:5001/api/categories', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+    CMD node -e "require('http').get('http://localhost:5001/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
 # Start application
 CMD ["node", "dist/index.js"]
