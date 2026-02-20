@@ -3,9 +3,9 @@ version: '3.8'
 services:
   postgres:
     environment:
-      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_DB: ${DB_DATABASE:-interviewdock}
     volumes:
       - postgres_data_prod:/var/lib/postgresql/data
     deploy:

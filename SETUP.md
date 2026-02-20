@@ -50,7 +50,7 @@ cp .env.example .env
 psql -U postgres
 
 # In psql prompt:
-CREATE DATABASE prepeasy;
+CREATE DATABASE interviewdock;
 \q
 ```
 

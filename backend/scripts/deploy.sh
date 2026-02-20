@@ -70,7 +70,7 @@ else
     exit 1
 fi
 
-if docker ps | grep -q "interviewdock-postgres"; then
+if docker ps | grep -q "interviewdock"; then
     echo -e "${GREEN}✅ Database service is running${NC}"
 else
     echo -e "${RED}❌ Database service failed to start${NC}"
