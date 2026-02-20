@@ -1,8 +1,17 @@
 node_modules/
 dist/
 .env
+.env.local
+.env.*.local
 *.log
 .DS_Store
 
-# PostgreSQL Docker volume
+# PostgreSQL Docker volumes
 postgres_data/
+postgres_data_prod/
+
+# Database backups
+backups/
+
+# Coverage reports
+coverage/
