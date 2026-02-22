@@ -2,14 +2,14 @@
 
 ## Step 1: Add Domain in Vercel
 
-1. **Go to Vercel Dashboard** → Your PrepEasy project
+1. **Go to Vercel Dashboard** → Your InterviewDock project
 
 2. **Click "Settings"** tab
 
 3. **Click "Domains"** in the left sidebar
 
 4. **Add your subdomain:**
-   - In the text box, enter: `prepeasy.biplaba.me` (or your preferred subdomain)
+   - In the text box, enter: `interviewdock.biplaba.me` (or your preferred subdomain)
    - Click **"Add"**
 
 5. **Vercel will show you DNS configuration needed:**
@@ -17,7 +17,7 @@
    You'll see something like:
    ```
    Type: CNAME
-   Name: prepeasy
+   Name: interviewdock
    Value: cname.vercel-dns.com
    ```
    
@@ -40,13 +40,13 @@
    **Fill in the details:**
    ```
    Type: CNAME
-   Name: prepeasy
+   Name: interviewdock
    Value: cname.vercel-dns.com
    TTL: 600 seconds (or default)
    ```
    
    **Important Notes:**
-   - **Name:** Just `prepeasy` (not the full domain)
+   - **Name:** Just `interviewdock` (not the full domain)
    - **Value:** Exactly what Vercel showed (usually `cname.vercel-dns.com`)
    - Some GoDaddy interfaces might call "Name" as "Host"
 
@@ -69,7 +69,7 @@
 3. **Check propagation status:**
    ```bash
    # On your Mac terminal
-   nslookup prepeasy.biplaba.me
+   nslookup interviewdock.biplaba.me
    ```
    
    Once it shows Vercel's IP, you're good!
@@ -86,7 +86,7 @@
    - SSL certificate status should be "Issued"
 
 3. **Test your site:**
-   - Visit: `https://prepeasy.biplaba.me`
+   - Visit: `https://interviewdock.biplaba.me`
    - Should load with SSL (🔒 padlock icon)
 
 ---
@@ -94,7 +94,7 @@
 ## 📋 Quick Reference
 
 ### Suggested Subdomain Names:
-- `prepeasy.biplaba.me` ⭐ (Recommended)
+- `interviewdock.biplaba.me` ⭐ (Recommended)
 - `interview.biplaba.me`
 - `prep.biplaba.me`
 - `learn.biplaba.me`
@@ -102,7 +102,7 @@
 ### DNS Record Details:
 ```
 Type: CNAME
-Name: prepeasy (or your chosen subdomain)
+Name: interviewdock (or your chosen subdomain)
 Value: cname.vercel-dns.com
 TTL: 600 (or default)
 ```
@@ -117,7 +117,7 @@ TTL: 600 (or default)
 1. DNS record is saved in GoDaddy
 2. Correct CNAME value from Vercel
 3. Wait longer (DNS can take time)
-4. Check with: `nslookup prepeasy.biplaba.me`
+4. Check with: `nslookup interviewdock.biplaba.me`
 
 ### "This site can't be reached"
 
@@ -125,7 +125,7 @@ TTL: 600 (or default)
 1. Clear browser cache
 2. Try incognito/private mode
 3. Wait for DNS propagation
-4. Verify DNS with: `dig prepeasy.biplaba.me`
+4. Verify DNS with: `dig interviewdock.biplaba.me`
 
 ### SSL Certificate Not Issued
 
@@ -147,7 +147,7 @@ TTL: 600 (or default)
 
 ### In Vercel:
 ```
-Settings → Domains → Enter: prepeasy.biplaba.me → Add
+Settings → Domains → Enter: interviewdock.biplaba.me → Add
 ↓
 Copy the CNAME value shown
 ```
@@ -157,7 +157,7 @@ Copy the CNAME value shown
 My Products → biplaba.me → DNS → Add Record
 ↓
 Type: CNAME
-Name: prepeasy
+Name: interviewdock
 Value: cname.vercel-dns.com
 ↓
 Save
@@ -169,7 +169,7 @@ Wait 10-30 minutes
 ↓
 Check Vercel: Settings → Domains (Should show green ✓)
 ↓
-Visit: https://prepeasy.biplaba.me
+Visit: https://interviewdock.biplaba.me
 ```
 
 ---
@@ -181,7 +181,7 @@ After setup:
 - [ ] Domain shows in Vercel dashboard
 - [ ] DNS propagated (check with nslookup)
 - [ ] SSL certificate issued (green checkmark in Vercel)
-- [ ] Site loads at https://prepeasy.biplaba.me
+- [ ] Site loads at https://interviewdock.biplaba.me
 - [ ] No CORS errors in browser console
 - [ ] All pages working (categories, questions, etc.)
 
@@ -196,7 +196,7 @@ After your domain is working, update your backend to allow requests from the new
 ssh -i "myaws.pem" ec2-user@ec2-3-109-123-31.ap-south-1.compute.amazonaws.com
 
 # Edit backend CORS configuration
-cd PrepEasy/backend
+cd InterviewDock/backend
 nano src/app.ts
 ```
 
@@ -205,7 +205,7 @@ Update CORS:
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://prepeasy.biplaba.me',  // Add your domain
+    'https://interviewdock.biplaba.me',  // Add your domain
   ],
   credentials: true
 }));

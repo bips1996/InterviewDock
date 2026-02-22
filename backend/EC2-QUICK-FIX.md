@@ -21,7 +21,7 @@ In production (`NODE_ENV=production`), TypeORM's `synchronize` is set to `false`
 
 ```bash
 # Run the automated setup script
-cd ~/PrepEasy/backend
+cd ~/InterviewDock/backend
 ./scripts/ec2-setup.sh
 ```
 
@@ -37,7 +37,7 @@ This script will:
 ### Option 2: Manual Fix
 
 ```bash
-cd ~/PrepEasy/backend
+cd ~/InterviewDock/backend
 
 # 1. Create/Edit .env file
 nano .env
@@ -47,10 +47,10 @@ DB_SYNCHRONIZE=true
 DB_LOGGING=false
 
 # 2. Restart application (if using PM2)
-pm2 restart prepeasy-backend
+pm2 restart interviewdock-backend
 
 # 3. Check logs to verify tables were created
-pm2 logs prepeasy-backend
+pm2 logs interviewdock-backend
 
 # 4. Seed the database
 npm run seed
@@ -82,7 +82,7 @@ curl -s "http://localhost:5001/api/questions?page=1&limit=1" | jq '.data.items[0
 If issues persist, run the diagnostics script:
 
 ```bash
-cd ~/PrepEasy/backend
+cd ~/InterviewDock/backend
 ./scripts/diagnose.sh
 ```
 
@@ -106,7 +106,7 @@ This will check:
 echo "DB_SYNCHRONIZE=true" >> .env
 
 # Restart server
-pm2 restart prepeasy-backend
+pm2 restart interviewdock-backend
 ```
 
 ### Issue 2: "Question count: 0" or empty results
@@ -141,13 +141,13 @@ cat .env | grep DB_
 **Fix**:
 ```bash
 # Check logs
-pm2 logs prepeasy-backend --lines 50
+pm2 logs interviewdock-backend --lines 50
 
 # Rebuild
 npm run build
 
 # Restart
-pm2 restart prepeasy-backend
+pm2 restart interviewdock-backend
 ```
 
 ## Production Safety
@@ -163,7 +163,7 @@ After initial setup and verification:
    DB_SYNCHRONIZE=false
    
    # Restart
-   pm2 restart prepeasy-backend
+   pm2 restart interviewdock-backend
    ```
 
 2. **Use migrations** for schema changes in production
@@ -185,16 +185,16 @@ After initial setup and verification:
 
 ```bash
 # View application logs
-pm2 logs prepeasy-backend
+pm2 logs interviewdock-backend
 
 # Restart application
-pm2 restart prepeasy-backend
+pm2 restart interviewdock-backend
 
 # Stop application
-pm2 stop prepeasy-backend
+pm2 stop interviewdock-backend
 
 # Start application
-pm2 start dist/index.js --name prepeasy-backend
+pm2 start dist/index.js --name interviewdock-backend
 
 # Monitor application
 pm2 monit
@@ -214,7 +214,7 @@ npm run seed
 If issues persist:
 
 1. Run diagnostics: `./scripts/diagnose.sh`
-2. Check logs: `pm2 logs prepeasy-backend --lines 100`
+2. Check logs: `pm2 logs interviewdock-backend --lines 100`
 3. Verify configuration: `cat .env`
 4. Check database: `psql -U postgres -d interviewdock -c "\dt"`
 

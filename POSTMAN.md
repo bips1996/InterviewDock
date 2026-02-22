@@ -1,25 +1,25 @@
-# PrepEasy API - Postman Collection
+# InterviewDock API - Postman Collection
 
-This directory contains Postman collection and environment files for testing the PrepEasy API.
+This directory contains Postman collection and environment files for testing the InterviewDock API.
 
 ## Files
 
-- **PrepEasy-API.postman_collection.json** - Complete API collection with all endpoints
-- **PrepEasy-Environments.postman_environment.json** - Environment configuration for local development
+- **InterviewDock-API.postman_collection.json** - Complete API collection with all endpoints
+- **InterviewDock-Environments.postman_environment.json** - Environment configuration for local development
 
 ## Import into Postman
 
 ### Import Collection
 1. Open Postman
 2. Click on **Import** button (top left)
-3. Select **PrepEasy-API.postman_collection.json**
+3. Select **InterviewDock-API.postman_collection.json**
 4. Click **Import**
 
 ### Import Environment
 1. Click on **Import** button
-2. Select **PrepEasy-Environments.postman_environment.json**
+2. Select **InterviewDock-Environments.postman_environment.json**
 3. Click **Import**
-4. Select "PrepEasy - Local" from the environment dropdown (top right)
+4. Select "InterviewDock - Local" from the environment dropdown (top right)
 
 ## API Endpoints
 

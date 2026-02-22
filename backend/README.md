@@ -293,8 +293,8 @@ For detailed EC2 deployment instructions, see [EC2-DEPLOYMENT.md](EC2-DEPLOYMENT
 
 ```bash
 # 1. Clone repository on EC2
-git clone <your-repo-url> PrepEasy
-cd PrepEasy/backend
+git clone <your-repo-url> InterviewDock
+cd InterviewDock/backend
 
 # 2. Run automated setup script
 ./scripts/ec2-setup.sh

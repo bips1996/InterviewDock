@@ -20,10 +20,10 @@ VITE_API_URL=http://13.235.133.89:5001/api
 ```
 
 ### Postman Environments
-1. **Local Environment** - `PrepEasy-Environments.postman_environment.json`
+1. **Local Environment** - `InterviewDock-Environments.postman_environment.json`
    - For testing with local backend: `http://localhost:5001`
 
-2. **Production Environment** - `PrepEasy-Production.postman_environment.json`
+2. **Production Environment** - `InterviewDock-Production.postman_environment.json`
    - For testing with production backend: `http://13.235.133.89:5001`
 
 ## Testing

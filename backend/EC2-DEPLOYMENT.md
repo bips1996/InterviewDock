@@ -1,6 +1,6 @@
 # EC2 Deployment Guide
 
-This guide explains how to deploy the PrepEasy backend application on AWS EC2.
+This guide explains how to deploy the InterviewDock backend application on AWS EC2.
 
 ## Prerequisites
 
@@ -57,8 +57,8 @@ GRANT ALL PRIVILEGES ON DATABASE interviewdock TO postgres;
 cd ~
 
 # Clone repository
-git clone <your-repo-url> PrepEasy
-cd PrepEasy/backend
+git clone <your-repo-url> InterviewDock
+cd InterviewDock/backend
 
 # Install dependencies
 npm install
@@ -148,7 +148,7 @@ For production, use PM2 to keep the application running:
 sudo npm install -g pm2
 
 # Start application with PM2
-pm2 start dist/index.js --name "prepeasy-backend"
+pm2 start dist/index.js --name "interviewdock-backend"
 
 # Save PM2 configuration
 pm2 save
@@ -158,13 +158,13 @@ pm2 startup
 # Follow the command shown
 
 # View logs
-pm2 logs prepeasy-backend
+pm2 logs interviewdock-backend
 
 # Monitor
 pm2 monit
 
 # Restart
-pm2 restart prepeasy-backend
+pm2 restart interviewdock-backend
 ```
 
 ## Using Docker (Alternative)
@@ -183,7 +183,7 @@ sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-
 sudo chmod +x /usr/local/bin/docker-compose
 
 # Start services
-cd ~/PrepEasy/backend
+cd ~/InterviewDock/backend
 docker-compose up -d
 
 # Wait for database to be ready
@@ -212,14 +212,14 @@ docker-compose logs -f backend
 
 2. **Restart the server to create tables**:
    ```bash
-   pm2 restart prepeasy-backend
+   pm2 restart interviewdock-backend
    # OR
    node dist/index.js
    ```
 
 3. **Check server logs for database errors**:
    ```bash
-   pm2 logs prepeasy-backend
+   pm2 logs interviewdock-backend
    ```
 
 4. **Verify database connection**:
@@ -311,7 +311,7 @@ psql -h localhost -U postgres -d interviewdock -c "SELECT id, title FROM questio
 
 ### View application logs:
 ```bash
-pm2 logs prepeasy-backend --lines 100
+pm2 logs interviewdock-backend --lines 100
 ```
 
 ### Check application status:
@@ -335,7 +335,7 @@ psql -h localhost -U postgres -d interviewdock -c "SELECT pg_size_pretty(pg_data
 
 ### Backup database:
 ```bash
-cd ~/PrepEasy/backend
+cd ~/InterviewDock/backend
 ./scripts/backup-db.sh
 ```
 
@@ -348,16 +348,16 @@ cd ~/PrepEasy/backend
 
 ### Pull latest code:
 ```bash
-cd ~/PrepEasy/backend
+cd ~/InterviewDock/backend
 git pull
 npm install
 npm run build
-pm2 restart prepeasy-backend
+pm2 restart interviewdock-backend
 ```
 
 ## Support
 
 If you encounter issues not covered here, check:
-1. Server logs: `pm2 logs prepeasy-backend`
+1. Server logs: `pm2 logs interviewdock-backend`
 2. PostgreSQL logs: `sudo tail -f /var/log/postgresql/postgresql-*.log`
 3. System logs: `sudo tail -f /var/log/messages`

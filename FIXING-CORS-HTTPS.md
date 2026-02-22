@@ -173,7 +173,7 @@ git push
 ssh -i "myaws.pem" ec2-user@ec2-3-109-123-31.ap-south-1.compute.amazonaws.com
 
 # 3. Pull latest changes
-cd PrepEasy/backend
+cd InterviewDock/backend
 git pull
 
 # 4. Rebuild and restart Docker

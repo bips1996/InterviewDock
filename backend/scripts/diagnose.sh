@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Diagnostics Script for PrepEasy Backend on EC2
+# Diagnostics Script for InterviewDock Backend on EC2
 # Run this script to diagnose issues with the application
 
-echo "🔍 PrepEasy Backend - Diagnostics"
+echo "🔍 InterviewDock Backend - Diagnostics"
 echo "=================================="
 echo ""
 
@@ -174,16 +174,16 @@ if command -v pm2 &> /dev/null; then
     pm2 list
     echo ""
     
-    if pm2 list | grep -q "prepeasy-backend"; then
-        if pm2 list | grep -q "prepeasy-backend.*online"; then
+    if pm2 list | grep -q "interviewdock-backend"; then
+        if pm2 list | grep -q "interviewdock-backend.*online"; then
             print_success "Application is running"
         else
             print_error "Application is not online"
-            echo "Check logs with: pm2 logs prepeasy-backend"
+            echo "Check logs with: pm2 logs interviewdock-backend"
         fi
     else
         print_warning "Application not found in PM2"
-        echo "Start with: pm2 start dist/index.js --name prepeasy-backend"
+        echo "Start with: pm2 start dist/index.js --name interviewdock-backend"
     fi
 else
     print_warning "PM2 not installed"
@@ -270,10 +270,10 @@ echo ""
 
 # 12. Recent Logs
 print_header "Recent Application Logs (PM2)"
-if command -v pm2 &> /dev/null && pm2 list | grep -q "prepeasy-backend"; then
+if command -v pm2 &> /dev/null && pm2 list | grep -q "interviewdock-backend"; then
     echo "Last 30 lines of logs:"
     echo ""
-    pm2 logs prepeasy-backend --lines 30 --nostream
+    pm2 logs interviewdock-backend --lines 30 --nostream
 else
     print_warning "PM2 not running or application not found"
 fi

@@ -18,7 +18,7 @@ Your frontend is ready to deploy! Choose one of these platforms:
 
 2. **Click "Add New Project"**
 
-3. **Import your GitHub repo** (PrepEasy)
+3. **Import your GitHub repo** (InterviewDock)
 
 4. **Configure:**
    ```
@@ -38,16 +38,16 @@ Your frontend is ready to deploy! Choose one of these platforms:
 
 7. **Add your domain:**
    - Go to project settings → Domains
-   - Add: `prepeasy.biplaba.me`
+   - Add: `interviewdock.biplaba.me`
    - Copy the CNAME record Vercel provides
    - Add CNAME to your domain DNS:
      ```
      Type: CNAME
-     Name: prepeasy
+     Name: interviewdock
      Value: cname.vercel-dns.com (or what Vercel shows)
      ```
 
-**Done!** Your site will be live at `https://prepeasy.biplaba.me`
+**Done!** Your site will be live at `https://interviewdock.biplaba.me`
 
 ---
 
@@ -72,7 +72,7 @@ Your frontend is ready to deploy! Choose one of these platforms:
 
 5. **Add custom domain:**
    - Domain settings → Add custom domain
-   - Enter: `prepeasy.biplaba.me`
+   - Enter: `interviewdock.biplaba.me`
    - Add CNAME to your DNS pointing to netlify
 
 ---
@@ -99,7 +99,7 @@ Your frontend is ready to deploy! Choose one of these platforms:
 
 5. **Custom domain:**
    - If biplaba.me is on Cloudflare, DNS is automatic!
-   - Just add: `prepeasy.biplaba.me`
+   - Just add: `interviewdock.biplaba.me`
 
 ---
 
@@ -114,7 +114,7 @@ You MUST update your backend to allow requests from your domain:
 ssh -i "myaws.pem" ec2-user@ec2-3-109-123-31.ap-south-1.compute.amazonaws.com
 
 # Edit the backend app.ts
-nano PrepEasy/backend/src/app.ts
+nano InterviewDock/backend/src/app.ts
 ```
 
 Update the CORS configuration:
@@ -122,7 +122,7 @@ Update the CORS configuration:
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://prepeasy.biplaba.me',  // Your domain
+    'https://interviewdock.biplaba.me',  // Your domain
   ],
   credentials: true
 }));
@@ -130,7 +130,7 @@ app.use(cors({
 
 Rebuild and restart:
 ```bash
-cd PrepEasy/backend
+cd InterviewDock/backend
 docker-compose down
 docker-compose up -d --build
 ```
@@ -155,7 +155,7 @@ After deployment, test:
 
 ## 🎯 Suggested Subdomain Names
 
-- `prepeasy.biplaba.me` ⭐
+- `interviewdock.biplaba.me` ⭐
 - `interview.biplaba.me`
 - `prep.biplaba.me`
 - `learn.biplaba.me`

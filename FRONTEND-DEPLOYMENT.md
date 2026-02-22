@@ -24,7 +24,7 @@ git push origin main
 
 2. **Click "Add New Project"**
 
-3. **Import your GitHub repository** (PrepEasy)
+3. **Import your GitHub repository** (InterviewDock)
 
 4. **Configure the project:**
    - **Framework Preset:** Vite
@@ -47,19 +47,19 @@ git push origin main
 
 2. **Click "Domains"** tab
 
-3. **Add domain:** `prepeasy.biplaba.me` (or your preferred subdomain)
+3. **Add domain:** `interviewdock.biplaba.me` (or your preferred subdomain)
 
 4. **Vercel will provide DNS records.** You'll see something like:
    ```
    Type: CNAME
-   Name: prepeasy
+   Name: interviewdock
    Value: cname.vercel-dns.com
    ```
 
 5. **Add the CNAME record to your domain:**
    - Go to your domain registrar (where you manage biplaba.me)
    - Add a CNAME record:
-     - Host/Name: `prepeasy`
+     - Host/Name: `interviewdock`
      - Points to: `cname.vercel-dns.com` (or the value Vercel provides)
      - TTL: 3600 (or default)
 
@@ -67,7 +67,7 @@ git push origin main
 
 7. **Vercel automatically provisions SSL certificate** ✅
 
-Your app will be live at: **https://prepeasy.biplaba.me**
+Your app will be live at: **https://interviewdock.biplaba.me**
 
 ---
 
@@ -98,12 +98,12 @@ Your app will be live at: **https://prepeasy.biplaba.me**
 
 2. **Click "Add custom domain"**
 
-3. Enter: `prepeasy.biplaba.me`
+3. Enter: `interviewdock.biplaba.me`
 
 4. **Add CNAME record** to your domain:
    ```
    Type: CNAME
-   Name: prepeasy
+   Name: interviewdock
    Value: your-site-name.netlify.app
    ```
 
@@ -140,7 +140,7 @@ Perfect if your domain is already on Cloudflare!
 
 2. **Click "Set up a custom domain"**
 
-3. Enter: `prepeasy.biplaba.me`
+3. Enter: `interviewdock.biplaba.me`
 
 4. **If biplaba.me is on Cloudflare**, it will automatically add the DNS record!
 
@@ -164,7 +164,7 @@ Perfect if your domain is already on Cloudflare!
 
 ## 📝 Suggested Subdomain Names
 
-- `prepeasy.biplaba.me` (recommended)
+- `interviewdock.biplaba.me` (recommended)
 - `interview.biplaba.me`
 - `prep.biplaba.me`
 - `learn.biplaba.me`
@@ -183,8 +183,8 @@ After deployment, update your backend to allow requests from your domain:
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://prepeasy.biplaba.me',  // Add your domain
-    'https://www.prepeasy.biplaba.me'  // If using www
+    'https://interviewdock.biplaba.me',  // Add your domain
+    'https://www.interviewdock.biplaba.me'  // If using www
   ],
   credentials: true
 }));
@@ -193,7 +193,7 @@ app.use(cors({
 Then rebuild and restart your backend:
 ```bash
 ssh -i "myaws.pem" ec2-user@ec2-3-109-123-31.ap-south-1.compute.amazonaws.com
-cd PrepEasy/backend
+cd InterviewDock/backend
 # Update the cors configuration
 docker-compose down
 docker-compose up -d --build
@@ -249,7 +249,7 @@ After deployment:
 ### Custom Domain Not Working
 - Wait for DNS propagation (can take up to 48 hours, usually 5-30 min)
 - Verify CNAME record is correct
-- Check DNS with: `nslookup prepeasy.biplaba.me`
+- Check DNS with: `nslookup interviewdock.biplaba.me`
 
 ---
 

@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "prepeasy-api-collection",
-    "name": "PrepEasy API Collection",
-    "description": "Complete API collection for PrepEasy - Interview Preparation Platform",
+    "_postman_id": "interviewdock-api-collection",
+    "name": "InterviewDock API Collection",
+    "description": "Complete API collection for InterviewDock - Interview Preparation Platform",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [

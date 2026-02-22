@@ -40,7 +40,7 @@ InterviewDock is a comprehensive interview preparation platform featuring:
 ### Project Structure
 
 ```
-PrepEasy/
+InterviewDock/
 ├── backend/           # Express API server
 │   ├── src/
 │   │   ├── config/    # Configuration

@@ -267,7 +267,7 @@ For production:
 # Folder Structure Overview
 
 ```
-PrepEasy/
+InterviewDock/
 ├── backend/
 │   ├── src/
 │   │   ├── config/         # App configuration

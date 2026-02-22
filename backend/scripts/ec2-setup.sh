@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# EC2 Quick Setup Script for PrepEasy Backend
+# EC2 Quick Setup Script for InterviewDock Backend
 # This script automates the initial deployment on EC2
 
 set -e  # Exit on error
 
-echo "🚀 PrepEasy Backend - EC2 Setup Script"
+echo "🚀 InterviewDock Backend - EC2 Setup Script"
 echo "======================================"
 echo ""
 
@@ -120,15 +120,15 @@ else
 fi
 
 # Stop existing PM2 process if running
-if pm2 list | grep -q "prepeasy-backend"; then
+if pm2 list | grep -q "interviewdock-backend"; then
     print_info "Stopping existing PM2 process..."
-    pm2 stop prepeasy-backend
-    pm2 delete prepeasy-backend
+    pm2 stop interviewdock-backend
+    pm2 delete interviewdock-backend
 fi
 
 # Start application with PM2
 print_info "Starting application with PM2..."
-pm2 start dist/index.js --name "prepeasy-backend"
+pm2 start dist/index.js --name "interviewdock-backend"
 print_success "Application started"
 
 # Wait for application to start
@@ -136,10 +136,10 @@ print_info "Waiting for application to start..."
 sleep 5
 
 # Check if application is running
-if pm2 list | grep -q "prepeasy-backend.*online"; then
+if pm2 list | grep -q "interviewdock-backend.*online"; then
     print_success "Application is running"
 else
-    print_error "Application failed to start. Check logs with: pm2 logs prepeasy-backend"
+    print_error "Application failed to start. Check logs with: pm2 logs interviewdock-backend"
     exit 1
 fi
 
@@ -182,7 +182,7 @@ if echo "$QUESTION_RESPONSE" | grep -q "success"; then
             print_success "Question title retrieved: $TITLE"
         else
             print_error "Question title is null or empty"
-            print_info "This might indicate a data issue. Check: pm2 logs prepeasy-backend"
+            print_info "This might indicate a data issue. Check: pm2 logs interviewdock-backend"
         fi
     fi
 else
@@ -208,9 +208,9 @@ echo "  - API: http://localhost:${PORT:-5001}/api"
 echo "  - Questions: http://localhost:${PORT:-5001}/api/questions"
 echo ""
 echo "📝 Useful Commands:"
-echo "  - View logs: pm2 logs prepeasy-backend"
-echo "  - Restart: pm2 restart prepeasy-backend"
-echo "  - Stop: pm2 stop prepeasy-backend"
+echo "  - View logs: pm2 logs interviewdock-backend"
+echo "  - Restart: pm2 restart interviewdock-backend"
+echo "  - Stop: pm2 stop interviewdock-backend"
 echo "  - Monitor: pm2 monit"
 echo ""
 echo "⚠️  Next Steps:"
