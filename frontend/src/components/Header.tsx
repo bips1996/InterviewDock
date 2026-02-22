@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 export const Header = () => {
   return (
-    <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+    <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center space-x-3 group">
@@ -33,12 +33,6 @@ export const Header = () => {
               className="text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200"
             >
               Questions
-            </Link>
-            <Link
-              to="/admin"
-              className="hidden sm:inline-flex text-gray-600 hover:text-primary-600 hover:bg-primary-50 px-2 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200"
-            >
-              Admin
             </Link>
           </nav>
         </div>

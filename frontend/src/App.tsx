@@ -16,7 +16,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/questions" element={<QuestionsPage />} />
           <Route path="/questions/:id" element={<QuestionDetailPage />} />
-          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/adminX" element={<AdminPage />} />
         </Routes>
         <Footer />
       </div>
