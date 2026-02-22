@@ -45,6 +45,10 @@ COPY --chown=nodejs:nodejs src ./src
 COPY --chown=nodejs:nodejs tsconfig.json ./
 RUN npm install --save-dev ts-node typescript @types/node
 
+# Copy startup script
+COPY --chown=nodejs:nodejs scripts/docker-startup.sh ./scripts/
+RUN chmod +x ./scripts/docker-startup.sh
+
 # Switch to non-root user
 USER nodejs
 

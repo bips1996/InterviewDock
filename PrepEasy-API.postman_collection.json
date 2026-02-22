@@ -1,0 +1,315 @@
+{
+  "info": {
+    "_postman_id": "prepeasy-api-collection",
+    "name": "PrepEasy API Collection",
+    "description": "Complete API collection for PrepEasy - Interview Preparation Platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Check if the API server is running"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories"]
+            },
+            "description": "Retrieve all available categories"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categories/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Category ID"
+                }
+              ]
+            },
+            "description": "Retrieve a specific category by its ID"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Technologies",
+      "item": [
+        {
+          "name": "Get All Technologies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/technologies",
+              "host": ["{{base_url}}"],
+              "path": ["api", "technologies"],
+              "query": [
+                {
+                  "key": "categoryId",
+                  "value": "",
+                  "description": "Filter by category ID (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Retrieve all technologies. Optionally filter by categoryId"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Technology by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/technologies/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "technologies", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Technology ID"
+                }
+              ]
+            },
+            "description": "Retrieve a specific technology by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Technology",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"React\",\n  \"slug\": \"react\",\n  \"description\": \"A JavaScript library for building user interfaces\",\n  \"icon\": \"react-icon.svg\",\n  \"categoryId\": \"1\",\n  \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/technologies",
+              "host": ["{{base_url}}"],
+              "path": ["api", "technologies"]
+            },
+            "description": "Create a new technology"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Questions",
+      "item": [
+        {
+          "name": "Get All Questions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/questions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "questions"],
+              "query": [
+                {
+                  "key": "technologyId",
+                  "value": "",
+                  "description": "Filter by technology ID",
+                  "disabled": true
+                },
+                {
+                  "key": "difficulty",
+                  "value": "",
+                  "description": "Filter by difficulty (beginner, intermediate, advanced)",
+                  "disabled": true
+                },
+                {
+                  "key": "tag",
+                  "value": "",
+                  "description": "Filter by tag",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search in question title and answer",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Retrieve questions with optional filters and pagination"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Questions with Filters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/questions?technologyId=1&difficulty=beginner&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "questions"],
+              "query": [
+                {
+                  "key": "technologyId",
+                  "value": "1",
+                  "description": "Filter by technology ID"
+                },
+                {
+                  "key": "difficulty",
+                  "value": "beginner",
+                  "description": "Filter by difficulty (beginner, intermediate, advanced)"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                }
+              ]
+            },
+            "description": "Example request with filters applied"
+          },
+          "response": []
+        },
+        {
+          "name": "Search Questions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/questions?search=hooks&page=1&limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "questions"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "hooks",
+                  "description": "Search in question title and answer"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number for pagination"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of items per page"
+                }
+              ]
+            },
+            "description": "Example search request"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Question by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/questions/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "questions", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1",
+                  "description": "Question ID"
+                }
+              ]
+            },
+            "description": "Retrieve a specific question by its ID"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"What is React?\",\n  \"answer\": \"React is a JavaScript library for building user interfaces, particularly single-page applications. It allows developers to create reusable UI components.\",\n  \"codeSnippet\": \"import React from 'react';\\n\\nfunction App() {\\n  return <h1>Hello, React!</h1>;\\n}\",\n  \"codeLanguage\": \"javascript\",\n  \"difficulty\": \"beginner\",\n  \"technologyId\": \"1\",\n  \"tags\": [\"basics\", \"introduction\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/questions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "questions"]
+            },
+            "description": "Create a new question. Required fields: title, answer, difficulty, technologyId. Optional: codeSnippet, codeLanguage, tags"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

@@ -8,6 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "seed": "ts-node src/database/seed.ts",
+    "seed:docker": "ts-node src/database/seed-docker.ts",
     "seed:prod": "node dist/database/seed.js",
     "typeorm": "typeorm-ts-node-commonjs"
   },
