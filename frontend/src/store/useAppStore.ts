@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Category, Technology, Question, QuestionFilters, Difficulty } from '@/types';
+import { Category, Technology, QuestionFilters } from '@/types';
 
 interface AppState {
   // Data
@@ -46,10 +46,10 @@ export const useAppStore = create<AppState>((set) => ({
     }),
 
   setSelectedTechnology: (technologyId) =>
-    set((state) => ({
+    set({
       selectedTechnologyId: technologyId,
       filters: { ...defaultFilters, technologyId: technologyId || undefined },
-    })),
+    }),
 
   setFilters: (newFilters) =>
     set((state) => ({
