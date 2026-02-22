@@ -2,23 +2,22 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import routes from './routes';
 import { errorHandler } from './middleware/errorHandler';
+import { config } from './config';
 
 export const createApp = (): Application => {
   const app = express();
 
-  // Middleware
-  app.use(cors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      /https:\/\/.*\.vercel\.app$/,  // Allow all Vercel preview deployments
-      'https://interview-doc.biplaba.me',  // Frontend domain
-      'https://api.interview-dock.biplaba.me',  // API domain
-    ],
+  // CORS Configuration
+  const corsOptions = {
+    origin: config.corsOrigin,
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  }));
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  };
+
+  // Middleware
+  app.use(cors(corsOptions));
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 

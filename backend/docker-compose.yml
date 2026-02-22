@@ -41,6 +41,7 @@ services:
       DB_DATABASE: ${DB_DATABASE:-interviewdock}
       DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-true}
       DB_LOGGING: ${DB_LOGGING:-false}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
     ports:
       - "${PORT:-5001}:5001"
     networks:
