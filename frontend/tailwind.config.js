@@ -6,8 +6,23 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
       colors: {
         primary: {
+          50: '#fef8ec',
+          100: '#fdefd0',
+          200: '#fbdd9e',
+          300: '#f8c66b',
+          400: '#f5b043',
+          500: '#bc8109',
+          600: '#a87108',
+          700: '#8a5d07',
+          800: '#6d4a06',
+          900: '#573b04',
+        },
+        accent: {
           50: '#f0f9ff',
           100: '#e0f2fe',
           200: '#bae6fd',
@@ -19,8 +34,22 @@ export default {
           800: '#075985',
           900: '#0c4a6e',
         },
+        dark: {
+          50: '#f8f9fa',
+          100: '#e9ecef',
+          200: '#dee2e6',
+          300: '#ced4da',
+          400: '#adb5bd',
+          500: '#6c757d',
+          600: '#495057',
+          700: '#343a40',
+          800: '#212529',
+          900: '#1a1d20',
+        },
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }

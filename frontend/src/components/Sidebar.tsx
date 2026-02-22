@@ -1,10 +1,15 @@
 import { useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, X } from "lucide-react";
 import { Category, Technology } from "@/types";
 import { categoryApi, technologyApi } from "@/services/api";
 import { useAppStore } from "@/store/useAppStore";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [technologies, setTechnologies] = useState<Technology[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,67 +51,112 @@ export const Sidebar = () => {
 
   if (loading) {
     return (
-      <aside className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
-        <div className="p-4">
-          <div className="animate-pulse space-y-4">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-10 bg-gray-200 rounded"></div>
-            ))}
+      <>
+        {/* Mobile Overlay */}
+        {isOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+            onClick={onClose}
+          />
+        )}
+
+        <aside
+          className={`fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 overflow-y-auto transform transition-transform duration-300 ease-in-out ${
+            isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}
+        >
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-4 lg:hidden">
+              <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 rounded-lg"
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
+            <div className="animate-pulse space-y-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-10 bg-gray-200 rounded"></div>
+              ))}
+            </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      </>
     );
   }
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 overflow-y-auto">
-      <div className="p-4">
-        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">
-          Categories
-        </h2>
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          onClick={onClose}
+        />
+      )}
 
-        <nav className="space-y-1">
-          {categories.map((category) => {
-            const categoryTechs = getTechnologiesForCategory(category.id);
-            const isExpanded = expandedCategory === category.id;
+      <aside
+        className={`fixed lg:static inset-y-0 left-0 z-30 w-64 bg-white border-r border-gray-200 overflow-y-auto transform transition-transform duration-300 ease-in-out ${
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        }`}
+      >
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Categories
+            </h2>
+            <button
+              onClick={onClose}
+              className="lg:hidden p-1 hover:bg-gray-100 rounded"
+            >
+              <X className="h-4 w-4 text-gray-500" />
+            </button>
+          </div>
 
-            return (
-              <div key={category.id}>
-                <button
-                  onClick={() => toggleCategory(category.id)}
-                  className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
-                >
-                  <span>{category.name}</span>
-                  <ChevronRight
-                    className={`h-4 w-4 transition-transform ${
-                      isExpanded ? "rotate-90" : ""
-                    }`}
-                  />
-                </button>
+          <nav className="space-y-1">
+            {categories.map((category) => {
+              const categoryTechs = getTechnologiesForCategory(category.id);
+              const isExpanded = expandedCategory === category.id;
 
-                {isExpanded && (
-                  <div className="ml-4 mt-1 space-y-1">
-                    {categoryTechs.map((tech) => (
-                      <button
-                        key={tech.id}
-                        onClick={() => setSelectedTechnology(tech.id)}
-                        className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
-                          selectedTechnologyId === tech.id
-                            ? "bg-primary-50 text-primary-700 font-medium"
-                            : "text-gray-600 hover:bg-gray-50"
-                        }`}
-                      >
-                        <span className="mr-2">{tech.icon}</span>
-                        {tech.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </nav>
-      </div>
-    </aside>
+              return (
+                <div key={category.id}>
+                  <button
+                    onClick={() => toggleCategory(category.id)}
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <span>{category.name}</span>
+                    <ChevronRight
+                      className={`h-4 w-4 transition-transform ${
+                        isExpanded ? "rotate-90" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {isExpanded && (
+                    <div className="ml-4 mt-1 space-y-1">
+                      {categoryTechs.map((tech) => (
+                        <button
+                          key={tech.id}
+                          onClick={() => setSelectedTechnology(tech.id)}
+                          className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${
+                            selectedTechnologyId === tech.id
+                              ? "bg-primary-50 text-primary-700 font-medium"
+                              : "text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          <span className="mr-2">{tech.icon}</span>
+                          {tech.name}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
+    </>
   );
 };

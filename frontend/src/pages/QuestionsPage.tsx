@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import { Question, PaginationMeta } from "@/types";
 import { questionApi } from "@/services/api";
 import { useAppStore } from "@/store/useAppStore";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { QuestionFilters } from "@/components/QuestionFilters";
 import { Sidebar } from "@/components/Sidebar";
+import { CodeBlock } from "@/components/CodeBlock";
 
 export const QuestionsPage = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { filters } = useAppStore();
 
@@ -44,16 +47,16 @@ export const QuestionsPage = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <QuestionFilters />
+        <QuestionFilters onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
             {/* Header */}
             <div className="mb-6">
-              <h1 className="text-3xl font-bold text-gray-900">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 Interview Questions
               </h1>
               {pagination && (
@@ -86,8 +89,12 @@ export const QuestionsPage = () => {
 
             {!loading && questions.length > 0 && (
               <div className="space-y-4">
-                {questions.map((question) => {
+                {questions.map((question, index) => {
                   const isExpanded = expandedId === question.id;
+                  // Calculate question number based on current page
+                  const questionNumber = pagination
+                    ? (pagination.page - 1) * pagination.limit + index + 1
+                    : index + 1;
 
                   return (
                     <div key={question.id} className="card">
@@ -96,14 +103,19 @@ export const QuestionsPage = () => {
                         onClick={() => toggleExpand(question.id)}
                       >
                         <div className="flex items-start justify-between mb-2">
-                          <h3 className="text-lg font-semibold text-gray-900 flex-1 pr-4">
-                            {question.title}
-                          </h3>
-                          <button className="flex-shrink-0">
+                          <div className="flex-1 pr-2 sm:pr-4">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
+                              <span className="text-primary-600">
+                                Question {questionNumber}.
+                              </span>{" "}
+                              {question.title}
+                            </h3>
+                          </div>
+                          <button className="flex-shrink-0 hover:bg-gray-100 rounded-full p-1 sm:p-1.5 transition-colors">
                             {isExpanded ? (
-                              <ChevronUp className="h-5 w-5 text-gray-400" />
+                              <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600" />
                             ) : (
-                              <ChevronDown className="h-5 w-5 text-gray-400" />
+                              <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                             )}
                           </button>
                         </div>
@@ -111,7 +123,7 @@ export const QuestionsPage = () => {
                         <div className="flex items-center gap-3 flex-wrap">
                           <DifficultyBadge difficulty={question.difficulty} />
                           {question.technology && (
-                            <span className="text-sm text-gray-600">
+                            <span className="text-sm text-gray-600 font-medium">
                               {question.technology.icon}{" "}
                               {question.technology.name}
                             </span>
@@ -132,13 +144,34 @@ export const QuestionsPage = () => {
                       </div>
 
                       {isExpanded && (
-                        <div className="mt-4 pt-4 border-t border-gray-200">
-                          <Link
-                            to={`/questions/${question.id}`}
-                            className="text-primary-600 hover:text-primary-700 font-medium inline-flex items-center"
-                          >
-                            View Full Answer →
-                          </Link>
+                        <div className="mt-6 pt-6 border-t border-gray-200">
+                          <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                            Answer:
+                          </h4>
+                          <div className="prose prose-base max-w-none prose-headings:text-gray-900 prose-headings:font-semibold prose-p:text-gray-700 prose-p:leading-7 prose-p:mb-4 prose-li:text-gray-700 prose-li:leading-7 prose-strong:text-gray-900 prose-strong:font-semibold prose-code:text-primary-700 prose-code:bg-primary-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+                            <ReactMarkdown>{question.answer}</ReactMarkdown>
+                          </div>
+
+                          {question.codeSnippet && (
+                            <div className="mt-6">
+                              <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                                Code Example:
+                              </h4>
+                              <CodeBlock
+                                code={question.codeSnippet}
+                                language={question.codeLanguage || "javascript"}
+                              />
+                            </div>
+                          )}
+
+                          <div className="mt-6 pt-4 border-t border-gray-100">
+                            <Link
+                              to={`/questions/${question.id}`}
+                              className="text-primary-600 hover:text-primary-700 font-medium inline-flex items-center text-sm hover:underline"
+                            >
+                              View in Detail Page →
+                            </Link>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -149,16 +182,17 @@ export const QuestionsPage = () => {
 
             {/* Pagination */}
             {pagination && pagination.totalPages > 1 && (
-              <div className="mt-8 flex items-center justify-center gap-2">
+              <div className="mt-8 flex items-center justify-center gap-2 flex-wrap">
                 <button
                   onClick={() => handlePageChange(pagination.page - 1)}
                   disabled={!pagination.hasPrev}
-                  className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
-                  Previous
+                  <span className="hidden sm:inline">Previous</span>
+                  <span className="sm:hidden">Prev</span>
                 </button>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   {Array.from(
                     { length: pagination.totalPages },
                     (_, i) => i + 1,
@@ -176,13 +210,16 @@ export const QuestionsPage = () => {
                       const showEllipsis = prevPage && page - prevPage > 1;
 
                       return (
-                        <div key={page} className="flex items-center gap-2">
+                        <div
+                          key={page}
+                          className="flex items-center gap-1 sm:gap-2"
+                        >
                           {showEllipsis && (
                             <span className="text-gray-400">...</span>
                           )}
                           <button
                             onClick={() => handlePageChange(page)}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                            className={`px-3 sm:px-4 py-2 rounded-lg font-medium transition-colors text-sm ${
                               page === pagination.page
                                 ? "bg-primary-600 text-white"
                                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
@@ -198,7 +235,7 @@ export const QuestionsPage = () => {
                 <button
                   onClick={() => handlePageChange(pagination.page + 1)}
                   disabled={!pagination.hasNext}
-                  className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn btn-secondary disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 >
                   Next
                 </button>
