@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, Loader2 } from "lucide-react";
 import { categoryApi, technologyApi, questionApi } from "@/services/api";
 import { Category, Technology, Difficulty } from "@/types";
+import { RichTextEditor, CodeEditor } from "@/components";
 
 export const AdminPage = () => {
   const [activeTab, setActiveTab] = useState<"technology" | "question">(
@@ -340,18 +341,16 @@ export const AdminPage = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Answer *
                   </label>
-                  <textarea
-                    required
+                  <RichTextEditor
                     value={questionForm.answer}
-                    onChange={(e) =>
+                    onChange={(value) =>
                       setQuestionForm({
                         ...questionForm,
-                        answer: e.target.value,
+                        answer: value,
                       })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    rows={10}
-                    placeholder="Provide a detailed answer (Markdown supported)"
+                    placeholder="Provide a detailed answer with rich formatting..."
+                    height="400px"
                   />
                 </div>
 
@@ -359,39 +358,26 @@ export const AdminPage = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Code Snippet (Optional)
                   </label>
-                  <textarea
+                  <CodeEditor
                     value={questionForm.codeSnippet}
-                    onChange={(e) =>
+                    onChange={(value) =>
                       setQuestionForm({
                         ...questionForm,
-                        codeSnippet: e.target.value,
+                        codeSnippet: value,
                       })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent font-mono text-sm"
-                    rows={8}
-                    placeholder="const example = () => { ... }"
+                    language={questionForm.codeLanguage || "javascript"}
+                    onLanguageChange={(language) =>
+                      setQuestionForm({
+                        ...questionForm,
+                        codeLanguage: language,
+                      })
+                    }
+                    height="400px"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Code Language
-                    </label>
-                    <input
-                      type="text"
-                      value={questionForm.codeLanguage}
-                      onChange={(e) =>
-                        setQuestionForm({
-                          ...questionForm,
-                          codeLanguage: e.target.value,
-                        })
-                      }
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                      placeholder="javascript"
-                    />
-                  </div>
-
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Technology *

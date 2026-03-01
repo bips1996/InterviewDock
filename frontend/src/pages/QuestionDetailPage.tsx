@@ -6,6 +6,7 @@ import { Question } from "@/types";
 import { questionApi } from "@/services/api";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { CodeBlock } from "@/components/CodeBlock";
+import "react-quill/dist/quill.snow.css";
 
 export const QuestionDetailPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,6 +30,21 @@ export const QuestionDetailPage = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Helper function to decode HTML entities
+  const decodeHtmlEntities = (text: string): string => {
+    const textarea = document.createElement("textarea");
+    textarea.innerHTML = text;
+    return textarea.value;
+  };
+
+  // Check if content is HTML (from rich text editor) or Markdown
+  const isHtmlContent = (text: string): boolean => {
+    // Decode first to check actual content
+    const decoded = decodeHtmlEntities(text);
+    // Check if it contains HTML tags (not just entities)
+    return /<\/?[a-z][\s\S]*>/i.test(decoded);
   };
 
   if (loading) {
@@ -115,9 +131,137 @@ export const QuestionDetailPage = () => {
           </div>
 
           {/* Answer */}
-          <div className="prose prose-lg max-w-none">
-            <ReactMarkdown>{question.answer}</ReactMarkdown>
-          </div>
+          <style>{`
+            .answer-content {
+              font-size: 1.125rem;
+              line-height: 1.75rem;
+              color: #1f2937;
+            }
+            .answer-content p {
+              margin-bottom: 1rem;
+            }
+            .answer-content ul, .answer-content ol {
+              padding-left: 1.5rem;
+              margin-bottom: 1rem;
+              list-style-position: outside;
+            }
+            .answer-content ul {
+              list-style-type: disc;
+            }
+            .answer-content ol {
+              list-style-type: decimal;
+            }
+            .answer-content li {
+              margin-bottom: 0.5rem;
+              line-height: 1.75;
+            }
+            .answer-content h1 {
+              font-size: 2.25rem;
+              font-weight: 700;
+              margin-top: 2rem;
+              margin-bottom: 1rem;
+              color: #111827;
+            }
+            .answer-content h2 {
+              font-size: 1.875rem;
+              font-weight: 700;
+              margin-top: 1.75rem;
+              margin-bottom: 0.875rem;
+              color: #111827;
+            }
+            .answer-content h3 {
+              font-size: 1.5rem;
+              font-weight: 700;
+              margin-top: 1.5rem;
+              margin-bottom: 0.75rem;
+              color: #111827;
+            }
+            .answer-content h4 {
+              font-size: 1.25rem;
+              font-weight: 600;
+              margin-top: 1.25rem;
+              margin-bottom: 0.625rem;
+              color: #111827;
+            }
+            .answer-content h5, .answer-content h6 {
+              font-size: 1.125rem;
+              font-weight: 600;
+              margin-top: 1rem;
+              margin-bottom: 0.5rem;
+              color: #111827;
+            }
+            .answer-content strong {
+              font-weight: 700;
+              color: #111827;
+            }
+            .answer-content em {
+              font-style: italic;
+            }
+            .answer-content u {
+              text-decoration: underline;
+            }
+            .answer-content s {
+              text-decoration: line-through;
+            }
+            .answer-content blockquote {
+              border-left: 4px solid #e5e7eb;
+              padding-left: 1rem;
+              margin: 1rem 0;
+              color: #6b7280;
+              font-style: italic;
+            }
+            .answer-content pre {
+              background: #1e1e1e;
+              color: #d4d4d4;
+              padding: 1rem;
+              border-radius: 0.5rem;
+              overflow-x: auto;
+              margin: 1rem 0;
+              font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+            }
+            .answer-content code {
+              background: #f3f4f6;
+              color: #e83e8c;
+              padding: 0.2rem 0.4rem;
+              border-radius: 0.25rem;
+              font-size: 0.875em;
+              font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+            }
+            .answer-content pre code {
+              background: transparent;
+              color: #d4d4d4;
+              padding: 0;
+            }
+            .answer-content a {
+              color: #3b82f6;
+              text-decoration: underline;
+            }
+            .answer-content a:hover {
+              color: #2563eb;
+            }
+            /* Handle Quill color classes */
+            .answer-content .ql-align-center {
+              text-align: center;
+            }
+            .answer-content .ql-align-right {
+              text-align: right;
+            }
+            .answer-content .ql-align-justify {
+              text-align: justify;
+            }
+          `}</style>
+          {isHtmlContent(question.answer) ? (
+            <div
+              className="answer-content"
+              dangerouslySetInnerHTML={{
+                __html: decodeHtmlEntities(question.answer),
+              }}
+            />
+          ) : (
+            <div className="prose prose-lg max-w-none">
+              <ReactMarkdown>{question.answer}</ReactMarkdown>
+            </div>
+          )}
 
           {/* Code Snippet */}
           {question.codeSnippet && (

@@ -9,6 +9,7 @@ import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { QuestionFilters } from "@/components/QuestionFilters";
 import { Sidebar } from "@/components/Sidebar";
 import { CodeBlock } from "@/components/CodeBlock";
+import "react-quill/dist/quill.snow.css";
 
 export const QuestionsPage = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -43,6 +44,21 @@ export const QuestionsPage = () => {
   const handlePageChange = (newPage: number) => {
     useAppStore.getState().setFilters({ page: newPage });
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Helper function to decode HTML entities
+  const decodeHtmlEntities = (text: string): string => {
+    const textarea = document.createElement("textarea");
+    textarea.innerHTML = text;
+    return textarea.value;
+  };
+
+  // Check if content is HTML (from rich text editor) or Markdown
+  const isHtmlContent = (text: string): boolean => {
+    // Decode first to check actual content
+    const decoded = decodeHtmlEntities(text);
+    // Check if it contains HTML tags (not just entities)
+    return /<\/?[a-z][\s\S]*>/i.test(decoded);
   };
 
   return (
@@ -148,9 +164,65 @@ export const QuestionsPage = () => {
                           <h4 className="text-lg font-semibold text-gray-900 mb-4">
                             Answer:
                           </h4>
-                          <div className="prose prose-base max-w-none prose-headings:text-gray-900 prose-headings:font-semibold prose-p:text-gray-700 prose-p:leading-7 prose-p:mb-4 prose-li:text-gray-700 prose-li:leading-7 prose-strong:text-gray-900 prose-strong:font-semibold prose-code:text-primary-700 prose-code:bg-primary-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
-                            <ReactMarkdown>{question.answer}</ReactMarkdown>
-                          </div>
+                          <style>{`
+                            .answer-preview {
+                              font-size: 1rem;
+                              line-height: 1.75rem;
+                              color: #374151;
+                            }
+                            .answer-preview p { margin-bottom: 1rem; }
+                            .answer-preview ul, .answer-preview ol {
+                              padding-left: 1.5rem;
+                              margin-bottom: 1rem;
+                              list-style-position: outside;
+                            }
+                            .answer-preview ul { list-style-type: disc; }
+                            .answer-preview ol { list-style-type: decimal; }
+                            .answer-preview li { margin-bottom: 0.5rem; line-height: 1.75; }
+                            .answer-preview h1, .answer-preview h2, .answer-preview h3,
+                            .answer-preview h4, .answer-preview h5, .answer-preview h6 {
+                              font-weight: 700;
+                              color: #111827;
+                              margin-top: 1.25rem;
+                              margin-bottom: 0.625rem;
+                            }
+                            .answer-preview h2 { font-size: 1.5rem; }
+                            .answer-preview h3 { font-size: 1.25rem; }
+                            .answer-preview h4 { font-size: 1.125rem; }
+                            .answer-preview strong { font-weight: 700; color: #111827; }
+                            .answer-preview em { font-style: italic; }
+                            .answer-preview u { text-decoration: underline; }
+                            .answer-preview s { text-decoration: line-through; }
+                            .answer-preview blockquote {
+                              border-left: 4px solid #e5e7eb;
+                              padding-left: 1rem;
+                              margin: 1rem 0;
+                              color: #6b7280;
+                            }
+                            .answer-preview code {
+                              background: #eff6ff;
+                              color: #1e40af;
+                              padding: 0.125rem 0.375rem;
+                              border-radius: 0.25rem;
+                              font-size: 0.875em;
+                            }
+                            .answer-preview a {
+                              color: #3b82f6;
+                              text-decoration: underline;
+                            }
+                          `}</style>
+                          {isHtmlContent(question.answer) ? (
+                            <div
+                              className="answer-preview"
+                              dangerouslySetInnerHTML={{
+                                __html: decodeHtmlEntities(question.answer),
+                              }}
+                            />
+                          ) : (
+                            <div className="prose prose-base max-w-none prose-headings:text-gray-900 prose-headings:font-semibold prose-p:text-gray-700 prose-p:leading-7 prose-p:mb-4 prose-li:text-gray-700 prose-li:leading-7 prose-strong:text-gray-900 prose-strong:font-semibold prose-code:text-primary-700 prose-code:bg-primary-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+                              <ReactMarkdown>{question.answer}</ReactMarkdown>
+                            </div>
+                          )}
 
                           {question.codeSnippet && (
                             <div className="mt-6">
