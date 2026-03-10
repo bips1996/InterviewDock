@@ -23,6 +23,7 @@ interface AppState {
 const defaultFilters: QuestionFilters = {
   page: 1,
   limit: 20,
+  sortBy: 'difficulty',
 };
 
 export const useAppStore = create<AppState>((set) => ({

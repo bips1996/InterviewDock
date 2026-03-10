@@ -17,7 +17,7 @@ export const AppDataSource = new DataSource({
   synchronize: process.env.DB_SYNCHRONIZE === 'true' || process.env.NODE_ENV === 'development',
   logging: process.env.DB_LOGGING === 'true' || process.env.NODE_ENV === 'development',
   entities: [Category, Technology, Question, Tag],
-  migrations: [],
+  migrations: [__dirname + '/../migrations/*{.ts,.js}'],
   subscribers: [],
   // Add connection retry logic
   extra: {

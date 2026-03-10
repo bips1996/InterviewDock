@@ -9,7 +9,7 @@ export class QuestionController {
   private questionService = new QuestionService();
 
   getQuestions = async (req: Request, res: Response) => {
-    const { technologyId, difficulty, tag, search, page, limit } = req.query;
+    const { technologyId, difficulty, tag, search, companyTag, sortBy, page, limit } = req.query;
 
     // Build filters
     const filters: QuestionFilters = {};
@@ -28,6 +28,14 @@ export class QuestionController {
 
     if (search) {
       filters.search = search as string;
+    }
+
+    if (companyTag) {
+      filters.companyTag = companyTag as string;
+    }
+
+    if (sortBy && ['difficulty', 'impressions', 'recent'].includes(sortBy as string)) {
+      filters.sortBy = sortBy as 'difficulty' | 'impressions' | 'recent';
     }
 
     // Get pagination params
@@ -60,7 +68,7 @@ export class QuestionController {
   };
 
   createQuestion = async (req: Request, res: Response) => {
-    const { title, answer, codeSnippet, codeLanguage, difficulty, technologyId, tags } = req.body;
+    const { title, answer, codeSnippet, codeLanguage, difficulty, technologyId, tags, companyTags } = req.body;
 
     if (!title || !answer || !difficulty || !technologyId) {
       throw new AppError('Missing required fields', 400);
@@ -78,11 +86,84 @@ export class QuestionController {
       difficulty: difficulty as Difficulty,
       technologyId,
       tags,
+      companyTags,
     });
 
     res.status(201).json({
       status: 'success',
       data: question,
+    });
+  };
+
+  updateQuestion = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { title, answer, codeSnippet, codeLanguage, difficulty, tags, companyTags } = req.body;
+
+    if (difficulty && !Object.values(Difficulty).includes(difficulty as Difficulty)) {
+      throw new AppError('Invalid difficulty level', 400);
+    }
+
+    const question = await this.questionService.updateQuestion(id, {
+      title,
+      answer,
+      codeSnippet,
+      codeLanguage,
+      difficulty: difficulty as Difficulty,
+      tags,
+      companyTags,
+    });
+
+    if (!question) {
+      throw new AppError('Question not found', 404);
+    }
+
+    res.json({
+      status: 'success',
+      data: question,
+    });
+  };
+
+  deleteQuestion = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const deleted = await this.questionService.deleteQuestion(id);
+
+    if (!deleted) {
+      throw new AppError('Question not found', 404);
+    }
+
+    res.json({
+      status: 'success',
+      message: 'Question deleted successfully',
+    });
+  };
+
+  likeQuestion = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const question = await this.questionService.likeQuestion(id);
+
+    if (!question) {
+      throw new AppError('Question not found', 404);
+    }
+
+    res.json({
+      status: 'success',
+      data: question,
+      message: 'Question liked successfully',
+    });
+  };
+
+  dislikeQuestion = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const question = await this.questionService.dislikeQuestion(id);
+
+    if (!question) {
+      throw new AppError('Question not found', 404);
+    }
+
+    res.json({
+      status: 'success',
+      data: question,
+      message: 'Question disliked successfully',
     });
   };
 }

@@ -10,7 +10,11 @@
     "seed": "ts-node src/database/seed.ts",
     "seed:docker": "ts-node src/database/seed-docker.ts",
     "seed:prod": "node dist/database/seed.js",
-    "typeorm": "typeorm-ts-node-commonjs"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:run": "typeorm-ts-node-commonjs migration:run -d src/config/database.ts",
+    "migration:revert": "typeorm-ts-node-commonjs migration:revert -d src/config/database.ts",
+    "migration:show": "typeorm-ts-node-commonjs migration:show -d src/config/database.ts",
+    "migration:create": "typeorm-ts-node-commonjs migration:create"
   },
   "keywords": [],
   "author": "",

@@ -202,7 +202,17 @@ interviewdock-postgres    Up (healthy)
 interviewdock-backend     Up
 ```
 
-#### Step 6: Seed Database
+#### Step 6: Run Migrations
+
+Apply database schema migrations:
+
+```bash
+docker-compose exec backend npm run migration:run
+```
+
+You should see output confirming migrations are applied.
+
+#### Step 7: Seed Database
 
 ```bash
 # Run seed script
@@ -212,7 +222,7 @@ interviewdock-backend     Up
 docker-compose exec backend npm run seed:prod
 ```
 
-#### Step 7: Test Deployment
+#### Step 8: Test Deployment
 
 ```bash
 # From EC2 instance
@@ -380,7 +390,18 @@ pm2 stop interviewdock
 pm2 delete interviewdock
 ```
 
-#### Step 7: Seed Database
+#### Step 7: Run Migrations
+
+Apply database schema migrations:
+
+```bash
+cd ~/PrepEasy/backend
+npm run migration:run
+```
+
+Verify migrations are applied successfully.
+
+#### Step 8: Seed Database
 
 ```bash
 cd ~/PrepEasy/backend
@@ -769,6 +790,40 @@ DB_SYNCHRONIZE=false
 ```
 
 Use migrations for schema changes in production.
+
+### Database Migrations
+
+**Run pending migrations:**
+```bash
+# With Docker
+docker-compose exec backend npm run migration:run
+
+# Without Docker (native)
+cd ~/PrepEasy/backend
+npm run migration:run
+```
+
+**Check migration status:**
+```bash
+# With Docker
+docker-compose exec backend npm run migration:show
+
+# Without Docker
+cd ~/PrepEasy/backend
+npm run migration:show
+```
+
+**Revert last migration (if needed):**
+```bash
+# With Docker
+docker-compose exec backend npm run migration:revert
+
+# Without Docker
+cd ~/PrepEasy/backend
+npm run migration:revert
+```
+
+**Important:** Always backup your database before running migrations in production!
 
 ---
 

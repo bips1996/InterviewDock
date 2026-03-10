@@ -22,9 +22,13 @@ export enum Difficulty {
 @Entity('questions')
 @Index(['title']) // Index for search performance
 @Index(['difficulty']) // Index for filtering
+@Index(['questionNumber']) // Index for question number lookup
 export class Question {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ length: 50, unique: true })
+  questionNumber: string; // Format: _{TechSlug}-{Number}
 
   @Column({ length: 500 })
   title: string;
@@ -45,6 +49,9 @@ export class Question {
   })
   difficulty: Difficulty;
 
+  @Column('simple-array', { default: '' })
+  companyTags: string[]; // Array of company names like ['Google', 'Amazon', 'Microsoft']
+
   @Column('uuid')
   technologyId: string;
 
@@ -63,6 +70,12 @@ export class Question {
     inverseJoinColumn: { name: 'tagId', referencedColumnName: 'id' },
   })
   tags: Tag[];
+
+  @Column({ type: 'integer', default: 0 })
+  likes: number;
+
+  @Column({ type: 'integer', default: 0 })
+  dislikes: number;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -80,4 +80,12 @@ export const questionApi = {
     );
     return data.data;
   },
-};
+  like: async (id: string): Promise<Question> => {
+    const { data } = await api.post<ApiResponse<Question>>(`/questions/${id}/like`);
+    return data.data;
+  },
+
+  dislike: async (id: string): Promise<Question> => {
+    const { data } = await api.post<ApiResponse<Question>>(`/questions/${id}/dislike`);
+    return data.data;
+  },};

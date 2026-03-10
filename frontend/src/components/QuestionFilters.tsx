@@ -1,4 +1,4 @@
-import { Search, Filter, X, Menu } from "lucide-react";
+import { Search, X, Menu } from "lucide-react";
 import { Difficulty } from "@/types";
 import { useAppStore } from "@/store/useAppStore";
 import { useState } from "react";
@@ -23,6 +23,13 @@ export const QuestionFilters = ({ onToggleSidebar }: QuestionFiltersProps) => {
     });
   };
 
+  const handleSortChange = (sortBy: string) => {
+    setFilters({
+      sortBy: sortBy as "difficulty" | "impressions" | "recent",
+      page: 1,
+    });
+  };
+
   const clearFilters = () => {
     setSearchInput("");
     resetFilters();
@@ -31,61 +38,70 @@ export const QuestionFilters = ({ onToggleSidebar }: QuestionFiltersProps) => {
   const hasActiveFilters = filters.search || filters.difficulty || filters.tag;
 
   return (
-    <div className="bg-white border-b border-gray-200 p-3 sm:p-4">
-      <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-        {/* Mobile Sidebar Toggle */}
-        <button
-          onClick={onToggleSidebar}
-          className="lg:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          aria-label="Toggle filters"
-        >
-          <Menu className="h-5 w-5 text-gray-600" />
-        </button>
+    <div className="bg-white border-b border-gray-200 px-3 sm:px-6 py-3 sm:py-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          {/* Mobile Sidebar Toggle */}
+          <button
+            onClick={onToggleSidebar}
+            className="lg:hidden p-1.5 hover:bg-gray-100 rounded transition-colors flex-shrink-0"
+            aria-label="Toggle filters"
+          >
+            <Menu className="h-5 w-5 text-gray-600" />
+          </button>
 
-        {/* Search */}
-        <form
-          onSubmit={handleSearch}
-          className="flex-1 min-w-[150px] sm:min-w-[200px]"
-        >
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              placeholder="Search..."
-              className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            />
-          </div>
-        </form>
+          {/* Search */}
+          <form onSubmit={handleSearch} className="flex-1 sm:max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search questions"
+                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50"
+              />
+            </div>
+          </form>
+        </div>
 
-        {/* Difficulty Filter */}
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-gray-400 hidden sm:block" />
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          {/* Sort By */}
+          <select
+            value={filters.sortBy || "difficulty"}
+            onChange={(e) => handleSortChange(e.target.value)}
+            className="flex-1 sm:flex-none px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50"
+          >
+            <option value="difficulty">Sort by Difficulty</option>
+            <option value="impressions">Sort by Impressions</option>
+            <option value="recent">Sort by Recent</option>
+          </select>
+
+          {/* Difficulty Filter */}
           <select
             value={filters.difficulty || ""}
             onChange={(e) =>
               handleDifficultyChange(e.target.value as Difficulty | "")
             }
-            className="px-2 sm:px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="flex-1 sm:flex-none px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-gray-50"
           >
             <option value="">All Difficulties</option>
             <option value={Difficulty.EASY}>Easy</option>
             <option value={Difficulty.MEDIUM}>Medium</option>
             <option value={Difficulty.HARD}>Hard</option>
           </select>
-        </div>
 
-        {/* Clear Filters */}
-        {hasActiveFilters && (
-          <button
-            onClick={clearFilters}
-            className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 transition-colors"
-          >
-            <X className="h-4 w-4" />
-            Clear Filters
-          </button>
-        )}
+          {/* Clear Filters */}
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex-shrink-0"
+            >
+              <X className="h-4 w-4" />
+              <span className="hidden sm:inline">Clear</span>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
