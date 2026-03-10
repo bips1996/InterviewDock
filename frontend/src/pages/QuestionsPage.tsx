@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Question, PaginationMeta } from "@/types";
 import { questionApi } from "@/services/api";
@@ -41,6 +41,36 @@ export const QuestionsPage = () => {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  const handleLike = async (questionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const updatedQuestion = await questionApi.like(questionId);
+      // Update the question in the list
+      setQuestions((prevQuestions) =>
+        prevQuestions.map((q) => (q.id === questionId ? updatedQuestion : q)),
+      );
+    } catch (error) {
+      console.error("Failed to like question:", error);
+    }
+  };
+
+  const handleDislike = async (questionId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const updatedQuestion = await questionApi.dislike(questionId);
+      // Update the question in the list
+      setQuestions((prevQuestions) =>
+        prevQuestions.map((q) => (q.id === questionId ? updatedQuestion : q)),
+      );
+    } catch (error) {
+      console.error("Failed to dislike question:", error);
+    }
+  };
+
+  const getImpressionScore = (question: Question): number => {
+    return question.likes - question.dislikes;
+  };
+
   const handlePageChange = (newPage: number) => {
     useAppStore.getState().setFilters({ page: newPage });
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -55,9 +85,7 @@ export const QuestionsPage = () => {
 
   // Check if content is HTML (from rich text editor) or Markdown
   const isHtmlContent = (text: string): boolean => {
-    // Decode first to check actual content
     const decoded = decodeHtmlEntities(text);
-    // Check if it contains HTML tags (not just entities)
     return /<\/?[a-z][\s\S]*>/i.test(decoded);
   };
 
@@ -68,27 +96,26 @@ export const QuestionsPage = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <QuestionFilters onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-        <main className="flex-1 overflow-y-auto">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-            {/* Header */}
-            <div className="mb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-                Interview Questions
-              </h1>
-              {pagination && (
-                <p className="text-gray-600 mt-2">
-                  Showing {questions.length} of {pagination.total} questions
-                </p>
-              )}
-            </div>
-
+        <main className="flex-1 overflow-y-auto bg-gray-50">
+          <div className="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
             {/* Loading State */}
             {loading && (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="card animate-pulse">
-                    <div className="h-6 bg-gray-200 rounded w-3/4 mb-4"></div>
-                    <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                  <div
+                    key={i}
+                    className="bg-white rounded-xl border border-gray-100 p-4 sm:p-6 animate-pulse"
+                  >
+                    <div className="flex items-center justify-between gap-6">
+                      <div className="flex-1">
+                        <div className="h-6 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-3 bg-gray-100 rounded w-32"></div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="h-7 w-16 bg-gray-200 rounded-md"></div>
+                        <div className="h-7 w-24 bg-gray-200 rounded-lg"></div>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -96,137 +123,152 @@ export const QuestionsPage = () => {
 
             {/* Questions List */}
             {!loading && questions.length === 0 && (
-              <div className="card text-center py-12">
-                <p className="text-gray-600 text-lg">
+              <div className="bg-white rounded-xl border border-gray-100 text-center py-12">
+                <p className="text-gray-600 text-base">
                   No questions found. Try adjusting your filters.
                 </p>
               </div>
             )}
 
             {!loading && questions.length > 0 && (
-              <div className="space-y-4">
-                {questions.map((question, index) => {
+              <div className="space-y-3">
+                {questions.map((question) => {
                   const isExpanded = expandedId === question.id;
-                  // Calculate question number based on current page
-                  const questionNumber = pagination
-                    ? (pagination.page - 1) * pagination.limit + index + 1
-                    : index + 1;
 
                   return (
-                    <div key={question.id} className="card">
+                    <div
+                      key={question.id}
+                      className="bg-white rounded-xl border border-gray-100 hover:border-gray-300 hover:shadow-lg hover:bg-gray-50/50 transition-all duration-200 overflow-hidden"
+                    >
+                      {/* Card Header */}
                       <div
-                        className="cursor-pointer"
+                        className="px-3 sm:px-6 py-4 sm:py-5 cursor-pointer"
                         onClick={() => toggleExpand(question.id)}
                       >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex-1 pr-2 sm:pr-4">
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">
-                              <span className="text-primary-600">
-                                Question {questionNumber}.
-                              </span>{" "}
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-6">
+                          {/* Left Side: Question Title */}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="text-base sm:text-lg font-semibold text-gray-900 leading-snug mb-1 hover:text-blue-600 transition-colors">
                               {question.title}
                             </h3>
+                            {/* Question ID as subtle kicker */}
+                            <p className="text-xs text-gray-400 font-mono">
+                              {question.questionNumber}
+                            </p>
                           </div>
-                          <button className="flex-shrink-0 hover:bg-gray-100 rounded-full p-1 sm:p-1.5 transition-colors">
-                            {isExpanded ? (
-                              <ChevronUp className="h-4 w-4 sm:h-5 sm:w-5 text-primary-600" />
-                            ) : (
-                              <ChevronDown className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                            )}
-                          </button>
-                        </div>
 
-                        <div className="flex items-center gap-3 flex-wrap">
-                          <DifficultyBadge difficulty={question.difficulty} />
-                          {question.technology && (
-                            <span className="text-sm text-gray-600 font-medium">
-                              {question.technology.icon}{" "}
-                              {question.technology.name}
-                            </span>
-                          )}
-                          {question.tags && question.tags.length > 0 && (
-                            <div className="flex gap-2">
-                              {question.tags.map((tag) => (
-                                <span
-                                  key={tag.id}
-                                  className="badge bg-gray-100 text-gray-700"
-                                >
-                                  {tag.name}
+                          {/* Right Side: Metadata */}
+                          <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+                            {/* Impressions */}
+                            <div className="flex items-center gap-1 sm:gap-2">
+                              <button
+                                onClick={(e) => handleLike(question.id, e)}
+                                className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-1 text-xs text-gray-600 hover:text-green-600 hover:bg-green-50 rounded transition-colors"
+                                title="Like"
+                              >
+                                <ThumbsUp className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
+                                <span className="font-medium">
+                                  {question.likes}
                                 </span>
-                              ))}
+                              </button>
+                              <button
+                                onClick={(e) => handleDislike(question.id, e)}
+                                className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-1 text-xs text-gray-600 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                title="Dislike"
+                              >
+                                <ThumbsDown className="h-3.5 sm:h-4 w-3.5 sm:w-4" />
+                                <span className="font-medium">
+                                  {question.dislikes}
+                                </span>
+                              </button>
+                              <span className="text-xs font-semibold text-gray-700">
+                                ({getImpressionScore(question) >= 0 ? "+" : ""}
+                                {getImpressionScore(question)})
+                              </span>
                             </div>
-                          )}
+
+                            {/* Difficulty Badge */}
+                            <DifficultyBadge difficulty={question.difficulty} />
+
+                            {/* Technology */}
+                            {question.technology && (
+                              <div className="hidden sm:flex items-center gap-1.5 text-xs text-gray-600 bg-gray-50 px-2 py-0.5 rounded border border-gray-200">
+                                <span className="text-sm">
+                                  {question.technology.icon}
+                                </span>
+                                <span className="font-medium">
+                                  {question.technology.name}
+                                </span>
+                              </div>
+                            )}
+
+                            {/* Expand Button */}
+                            <button className="flex-shrink-0 p-1 sm:p-1.5 hover:bg-gray-200 rounded-lg transition-colors sm:ml-2">
+                              {isExpanded ? (
+                                <ChevronUp className="h-4 sm:h-5 w-4 sm:w-5 text-gray-500" />
+                              ) : (
+                                <ChevronDown className="h-4 sm:h-5 w-4 sm:w-5 text-gray-400" />
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
 
+                      {/* Expandable Content */}
                       {isExpanded && (
-                        <div className="mt-6 pt-6 border-t border-gray-200">
-                          <h4 className="text-lg font-semibold text-gray-900 mb-4">
+                        <div className="border-t border-gray-200 bg-gray-50 px-3 sm:px-5 py-3 sm:py-4">
+                          {/* Tags and Company Tags */}
+                          <div className="flex items-center gap-2 flex-wrap mb-4">
+                            {/* Tags */}
+                            {question.tags && question.tags.length > 0 && (
+                              <>
+                                {question.tags.map((tag) => (
+                                  <span
+                                    key={tag.id}
+                                    className="text-xs text-gray-600 bg-gray-100 px-2 py-0.5 rounded font-medium"
+                                  >
+                                    {tag.name}
+                                  </span>
+                                ))}
+                              </>
+                            )}
+
+                            {/* Company Tags */}
+                            {question.companyTags &&
+                              question.companyTags.length > 0 && (
+                                <>
+                                  {question.companyTags.map((company, idx) => (
+                                    <span
+                                      key={idx}
+                                      className="text-xs text-blue-700 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded font-semibold"
+                                    >
+                                      {company}
+                                    </span>
+                                  ))}
+                                </>
+                              )}
+                          </div>
+
+                          <h4 className="text-sm font-semibold text-gray-900 mb-3">
                             Answer:
                           </h4>
-                          <style>{`
-                            .answer-preview {
-                              font-size: 1rem;
-                              line-height: 1.75rem;
-                              color: #374151;
-                            }
-                            .answer-preview p { margin-bottom: 1rem; }
-                            .answer-preview ul, .answer-preview ol {
-                              padding-left: 1.5rem;
-                              margin-bottom: 1rem;
-                              list-style-position: outside;
-                            }
-                            .answer-preview ul { list-style-type: disc; }
-                            .answer-preview ol { list-style-type: decimal; }
-                            .answer-preview li { margin-bottom: 0.5rem; line-height: 1.75; }
-                            .answer-preview h1, .answer-preview h2, .answer-preview h3,
-                            .answer-preview h4, .answer-preview h5, .answer-preview h6 {
-                              font-weight: 700;
-                              color: #111827;
-                              margin-top: 1.25rem;
-                              margin-bottom: 0.625rem;
-                            }
-                            .answer-preview h2 { font-size: 1.5rem; }
-                            .answer-preview h3 { font-size: 1.25rem; }
-                            .answer-preview h4 { font-size: 1.125rem; }
-                            .answer-preview strong { font-weight: 700; color: #111827; }
-                            .answer-preview em { font-style: italic; }
-                            .answer-preview u { text-decoration: underline; }
-                            .answer-preview s { text-decoration: line-through; }
-                            .answer-preview blockquote {
-                              border-left: 4px solid #e5e7eb;
-                              padding-left: 1rem;
-                              margin: 1rem 0;
-                              color: #6b7280;
-                            }
-                            .answer-preview code {
-                              background: #eff6ff;
-                              color: #1e40af;
-                              padding: 0.125rem 0.375rem;
-                              border-radius: 0.25rem;
-                              font-size: 0.875em;
-                            }
-                            .answer-preview a {
-                              color: #3b82f6;
-                              text-decoration: underline;
-                            }
-                          `}</style>
+
                           {isHtmlContent(question.answer) ? (
                             <div
-                              className="answer-preview"
+                              className="prose prose-sm max-w-none"
                               dangerouslySetInnerHTML={{
                                 __html: decodeHtmlEntities(question.answer),
                               }}
                             />
                           ) : (
-                            <div className="prose prose-base max-w-none prose-headings:text-gray-900 prose-headings:font-semibold prose-p:text-gray-700 prose-p:leading-7 prose-p:mb-4 prose-li:text-gray-700 prose-li:leading-7 prose-strong:text-gray-900 prose-strong:font-semibold prose-code:text-primary-700 prose-code:bg-primary-50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded">
+                            <div className="prose prose-sm max-w-none">
                               <ReactMarkdown>{question.answer}</ReactMarkdown>
                             </div>
                           )}
 
                           {question.codeSnippet && (
-                            <div className="mt-6">
-                              <h4 className="text-lg font-semibold text-gray-900 mb-3">
+                            <div className="mt-4">
+                              <h4 className="text-sm font-semibold text-gray-900 mb-2">
                                 Code Example:
                               </h4>
                               <CodeBlock
@@ -236,12 +278,13 @@ export const QuestionsPage = () => {
                             </div>
                           )}
 
-                          <div className="mt-6 pt-4 border-t border-gray-100">
+                          <div className="mt-4 pt-3 border-t border-gray-200">
                             <Link
                               to={`/questions/${question.id}`}
-                              className="text-primary-600 hover:text-primary-700 font-medium inline-flex items-center text-sm hover:underline"
+                              className="text-blue-600 hover:text-blue-700 text-sm font-medium hover:underline inline-flex items-center"
+                              onClick={(e) => e.stopPropagation()}
                             >
-                              View in Detail Page →
+                              View Full Details →
                             </Link>
                           </div>
                         </div>

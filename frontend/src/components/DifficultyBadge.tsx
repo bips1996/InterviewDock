@@ -5,18 +5,37 @@ interface DifficultyBadgeProps {
 }
 
 export const DifficultyBadge = ({ difficulty }: DifficultyBadgeProps) => {
-  const getBadgeClass = () => {
+  const getBadgeClasses = () => {
     switch (difficulty) {
       case Difficulty.EASY:
-        return "badge-easy";
+        return "bg-green-50 text-green-700 border-green-200";
       case Difficulty.MEDIUM:
-        return "badge-medium";
+        return "bg-orange-50 text-orange-700 border-orange-200";
       case Difficulty.HARD:
-        return "badge-hard";
+        return "bg-red-50 text-red-700 border-red-200";
       default:
-        return "badge-medium";
+        return "bg-gray-50 text-gray-700 border-gray-200";
     }
   };
 
-  return <span className={`badge ${getBadgeClass()}`}>{difficulty}</span>;
+  const getDisplayText = () => {
+    switch (difficulty) {
+      case Difficulty.EASY:
+        return "Easy";
+      case Difficulty.MEDIUM:
+        return "Medium";
+      case Difficulty.HARD:
+        return "Hard";
+      default:
+        return difficulty;
+    }
+  };
+
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold border ${getBadgeClasses()}`}
+    >
+      {getDisplayText()}
+    </span>
+  );
 };

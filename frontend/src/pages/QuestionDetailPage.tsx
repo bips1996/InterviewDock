@@ -83,55 +83,96 @@ export const QuestionDetailPage = () => {
         </button>
 
         {/* Question Card */}
-        <div className="card">
-          {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
+          {/* Header Bar */}
+          <div className="relative px-8 py-6 bg-gradient-to-br from-slate-50 via-white to-slate-50 border-b border-gray-200">
+            {/* Question Number - Primary Badge */}
+            <div className="inline-flex items-center bg-primary-600 text-white px-4 py-2 rounded-lg font-mono text-sm font-bold tracking-wide shadow-md mb-4">
+              {question.questionNumber}
+            </div>
+
+            {/* Title */}
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
               {question.title}
             </h1>
 
-            <div className="flex items-center gap-4 flex-wrap">
+            {/* Metadata Row */}
+            <div className="flex items-center gap-3 flex-wrap">
               <DifficultyBadge difficulty={question.difficulty} />
 
               {question.technology && (
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <span className="text-lg">{question.technology.icon}</span>
-                  <span className="font-medium">
-                    {question.technology.name}
-                  </span>
-                  {question.technology.category && (
-                    <span className="text-gray-400">
-                      • {question.technology.category.name}
-                    </span>
-                  )}
-                </div>
+                <>
+                  <span className="text-gray-300">•</span>
+                  <div className="inline-flex items-center gap-2 bg-white border border-gray-200 px-3 py-1.5 rounded-lg shadow-sm">
+                    <span className="text-lg">{question.technology.icon}</span>
+                    <div>
+                      <span className="text-sm font-semibold text-gray-900">
+                        {question.technology.name}
+                      </span>
+                      {question.technology.category && (
+                        <span className="text-xs text-gray-500 ml-1">
+                          • {question.technology.category.name}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </>
               )}
 
-              <div className="flex items-center gap-1 text-sm text-gray-500">
+              <span className="text-gray-300">•</span>
+
+              <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Calendar className="h-4 w-4" />
-                {new Date(question.createdAt).toLocaleDateString()}
+                <span className="font-medium">
+                  {new Date(question.createdAt).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
               </div>
+
+              {/* Tags */}
+              {question.tags && question.tags.length > 0 && (
+                <>
+                  <span className="text-gray-300">•</span>
+                  <div className="flex items-center gap-2">
+                    <TagIcon className="h-4 w-4 text-gray-400" />
+                    {question.tags.map((tag) => (
+                      <span
+                        key={tag.id}
+                        className="inline-flex items-center text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-md transition-colors"
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
 
-            {question.tags && question.tags.length > 0 && (
-              <div className="flex items-center gap-2 mt-4">
-                <TagIcon className="h-4 w-4 text-gray-400" />
-                <div className="flex gap-2 flex-wrap">
-                  {question.tags.map((tag) => (
-                    <span
-                      key={tag.id}
-                      className="badge bg-gray-100 text-gray-700"
-                    >
-                      {tag.name}
-                    </span>
-                  ))}
-                </div>
+            {/* Company Tags */}
+            {question.companyTags && question.companyTags.length > 0 && (
+              <div className="mt-4 flex items-center gap-2 flex-wrap">
+                <span className="text-xs font-semibold text-blue-700 uppercase tracking-wide">
+                  Companies:
+                </span>
+                {question.companyTags.map((company, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center text-sm font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-md hover:bg-blue-100 transition-colors"
+                  >
+                    {company}
+                  </span>
+                ))}
               </div>
             )}
           </div>
 
-          {/* Answer */}
-          <style>{`
+          {/* Content Section */}
+          <div className="px-8 py-8">
+            {/* Answer */}
+            <style>{`
             .answer-content {
               font-size: 1.125rem;
               line-height: 1.75rem;
@@ -250,39 +291,40 @@ export const QuestionDetailPage = () => {
               text-align: justify;
             }
           `}</style>
-          {isHtmlContent(question.answer) ? (
-            <div
-              className="answer-content"
-              dangerouslySetInnerHTML={{
-                __html: decodeHtmlEntities(question.answer),
-              }}
-            />
-          ) : (
-            <div className="prose prose-lg max-w-none">
-              <ReactMarkdown>{question.answer}</ReactMarkdown>
-            </div>
-          )}
-
-          {/* Code Snippet */}
-          {question.codeSnippet && (
-            <div className="mt-8">
-              <h3 className="text-xl font-semibold mb-4">Code Example</h3>
-              <CodeBlock
-                code={question.codeSnippet}
-                language={question.codeLanguage || "javascript"}
+            {isHtmlContent(question.answer) ? (
+              <div
+                className="answer-content"
+                dangerouslySetInnerHTML={{
+                  __html: decodeHtmlEntities(question.answer),
+                }}
               />
-            </div>
-          )}
-        </div>
+            ) : (
+              <div className="prose prose-lg max-w-none">
+                <ReactMarkdown>{question.answer}</ReactMarkdown>
+              </div>
+            )}
 
-        {/* Related Questions CTA */}
-        <div className="mt-6 text-center">
-          <Link
-            to="/questions"
-            className="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium"
-          >
-            Explore More Questions →
-          </Link>
+            {/* Code Snippet */}
+            {question.codeSnippet && (
+              <div className="mt-8">
+                <h3 className="text-xl font-semibold mb-4">Code Example</h3>
+                <CodeBlock
+                  code={question.codeSnippet}
+                  language={question.codeLanguage || "javascript"}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Related Questions CTA */}
+          <div className="bg-gray-50 px-6 py-4 border-t border-gray-100">
+            <Link
+              to="/questions"
+              className="inline-flex items-center text-primary-600 hover:text-primary-700 font-semibold transition-colors"
+            >
+              Explore More Questions →
+            </Link>
+          </div>
         </div>
       </div>
     </div>

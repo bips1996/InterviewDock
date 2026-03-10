@@ -38,6 +38,7 @@ export interface Tag {
 
 export interface Question {
   id: string;
+  questionNumber: string; // Format: _{TechSlug}-{Number}
   title: string;
   answer: string;
   codeSnippet?: string;
@@ -46,6 +47,9 @@ export interface Question {
   technologyId: string;
   technology?: Technology;
   tags?: Tag[];
+  companyTags: string[]; // Array of company names
+  likes: number;
+  dislikes: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -75,6 +79,8 @@ export interface QuestionFilters {
   difficulty?: Difficulty;
   tag?: string;
   search?: string;
+  companyTag?: string;
+  sortBy?: 'difficulty' | 'impressions' | 'recent';
   page?: number;
   limit?: number;
 }

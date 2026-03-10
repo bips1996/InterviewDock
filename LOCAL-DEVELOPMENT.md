@@ -171,6 +171,12 @@ docker-compose down -v
 # Access PostgreSQL CLI
 docker-compose exec postgres psql -U postgres -d interviewdock
 
+# Run migrations
+docker-compose exec backend npm run migration:run
+
+# View migration status
+docker-compose exec backend npm run migration:show
+
 # Manually seed database
 ./scripts/docker-seed.sh
 # or
@@ -256,7 +262,24 @@ You should see:
 🚀 Server running on port 5001
 ```
 
-#### 4. Seed the Database
+#### 4. Run Migrations
+
+Apply database schema migrations:
+
+```bash
+cd backend
+npm run migration:run
+```
+
+You should see:
+```
+query: SELECT * FROM "information_schema"."tables" WHERE "table_schema" = current_schema() AND "table_name" = 'migrations'
+query: SELECT * FROM "migrations" "migrations" ORDER BY "id" DESC
+X migrations are already loaded in the database.
+No migrations are pending
+```
+
+#### 5. Seed the Database
 
 In a new terminal:
 
@@ -275,7 +298,7 @@ You should see:
    - Tags: 12
 ```
 
-#### 5. Frontend Setup
+#### 6. Frontend Setup
 
 ```bash
 # Open a new terminal
@@ -341,6 +364,40 @@ docker-compose down
 ---
 
 ## Database Management
+
+### Migrations
+
+Run migrations to set up or update your database schema:
+
+**With Docker:**
+```bash
+cd backend
+docker-compose exec backend npm run migration:run
+```
+
+**Without Docker:**
+```bash
+cd backend
+npm run migration:run
+```
+
+**View migration status:**
+```bash
+cd backend
+npm run migration:show
+```
+
+**Create a new migration:**
+```bash
+cd backend
+npm run migration:generate -- src/migrations/MigrationName
+```
+
+**Revert last migration:**
+```bash
+cd backend
+npm run migration:revert
+```
 
 ### Seeding
 
