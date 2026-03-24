@@ -40,10 +40,15 @@ backend/
 │   │   └── errorHandler.ts
 │   ├── utils/            # Utility functions
 │   │   └── pagination.ts
-│   ├── database/         # Database related
-│   │   └── seed.ts       # Seed script
+│   ├── migrations/       # Database migrations
+│   │   └── *.ts          # Migration files
 │   ├── app.ts            # Express app setup
 │   └── index.ts          # Entry point
+├── scripts/              # Utility scripts
+│   ├── docker-startup.sh
+│   ├── docker-restore.sh
+│   └── db_backup/        # Backup management scripts
+├── backups/              # Database backups
 ├── package.json
 ├── tsconfig.json
 ├── .env.example
@@ -207,19 +212,28 @@ Get a specific question by ID.
    \q
    ```
 
-4. **Run development server:**
+4. **Run database migrations:**
+   ```bash
+   npm run migration:run
+   ```
+   
+   This will create all necessary tables and schema.
+
+5. **Restore data from backup:**
+   ```bash
+   # Using npm script (recommended)
+   npm run db:restore
+   
+   # Or manually with the restore script
+   # ./scripts/db_backup/restore-db.sh backups/interviewdock_backup_20260324_032628.sql.gz
+   ```
+
+6. **Run development server:**
    ```bash
    npm run dev
    ```
 
    The server will start on `http://localhost:5000`
-
-5. **Seed the database:**
-   ```bash
-   npm run seed
-   ```
-
-   This will populate the database with sample categories, technologies, and questions.
 
 ### Production Build
 
@@ -247,10 +261,11 @@ npm start
 - Rich pagination metadata (hasNext, hasPrev, etc.)
 
 ### Database Features
-- Auto-sync in development
+- Migration-based schema management
 - Cascade deletes on foreign keys
 - Indexes on frequently queried fields
 - Enum types for difficulty levels
+- Backup and restore functionality
 
 ## Development
 
@@ -259,8 +274,11 @@ npm start
 - `npm run dev` - Start development server with hot reload
 - `npm run build` - Build for production
 - `npm start` - Run production server
-- `npm run seed` - Seed database with sample data
-
+- `npm run migration:run` - Run pending database migrations
+- `npm run migration:show` - Show migration status
+- `npm run migration:revert` - Revert last migration
+- `npm run migration:create` - Create a new migration file- `npm run db:restore` - Restore database from latest backup
+- `npm run db:restore:docker` - Restore database in Docker environment
 ### Code Style
 
 - TypeScript strict mode enabled
@@ -278,10 +296,10 @@ npm start
 | DB_USERNAME | Database username | postgres |
 | DB_PASSWORD | Database password | postgres |
 | DB_DATABASE | Database name | interviewdock |
-| DB_SYNCHRONIZE | Auto-create tables (true/false) | NODE_ENV === 'development' |
 | DB_LOGGING | Enable SQL logging (true/false) | NODE_ENV === 'development' |
 | DEFAULT_PAGE_SIZE | Default pagination size | 20 |
 | MAX_PAGE_SIZE | Maximum pagination size | 100 |
+| RESTORE_BACKUP | Path to backup file for auto-restore | (optional) |
 
 ## Deployment
 

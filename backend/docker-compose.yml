@@ -39,11 +39,14 @@ services:
       DB_USERNAME: ${DB_USERNAME:-postgres}
       DB_PASSWORD: ${DB_PASSWORD:-postgres}
       DB_DATABASE: ${DB_DATABASE:-interviewdock}
-      DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-true}
       DB_LOGGING: ${DB_LOGGING:-false}
       CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      # Migration and backup restore settings
+      RESTORE_BACKUP: ${RESTORE_BACKUP:-backups/interviewdock_backup_20260324_032628.sql.gz}
     ports:
       - "${PORT:-5001}:5001"
+    volumes:
+      - ./backups:/app/backups:ro
     networks:
       - interviewdock-network
     command: sh ./scripts/docker-startup.sh

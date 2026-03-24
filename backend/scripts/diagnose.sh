@@ -76,8 +76,8 @@ if [ -f ".env" ]; then
     echo "  DB_PORT: ${DB_PORT:-not set}"
     echo "  DB_DATABASE: ${DB_DATABASE:-not set}"
     echo "  DB_USERNAME: ${DB_USERNAME:-not set}"
-    echo "  DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-not set}"
     echo "  DB_LOGGING: ${DB_LOGGING:-not set}"
+    echo "  RESTORE_BACKUP: ${RESTORE_BACKUP:-not set}"
     
     if [ -f ".env" ]; then
         source .env
@@ -156,10 +156,9 @@ if [ -n "$DB_HOST" ] && [ -n "$DB_USERNAME" ] && [ -n "$DB_DATABASE" ]; then
         done
     else
         print_error "No tables found in database"
-        echo "Tables may not have been created. Check DB_SYNCHRONIZE setting."
-        echo "Current DB_SYNCHRONIZE: ${DB_SYNCHRONIZE:-not set}"
-        echo ""
-        echo "If DB_SYNCHRONIZE is false, set it to true and restart the server."
+        echo "Tables may not have been created. Run migrations."
+        echo "Run: npm run migration:run"
+        echo "Or in Docker: docker-compose exec backend npm run migration:run"
     fi
 else
     print_warning "Cannot check tables - database configuration not loaded"
