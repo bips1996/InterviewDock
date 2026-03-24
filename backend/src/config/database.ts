@@ -14,7 +14,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'postgres',
   password: process.env.DB_PASSWORD || 'postgres',
   database: process.env.DB_DATABASE || 'interviewdock',
-  synchronize: process.env.DB_SYNCHRONIZE === 'true' || process.env.NODE_ENV === 'development',
+  synchronize: false, // Always use migrations, never use synchronize
   logging: process.env.DB_LOGGING === 'true' || process.env.NODE_ENV === 'development',
   entities: [Category, Technology, Question, Tag],
   migrations: [__dirname + '/../migrations/*{.ts,.js}'],

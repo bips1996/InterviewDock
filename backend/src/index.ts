@@ -15,20 +15,20 @@ const startServer = async () => {
       port: process.env.DB_PORT || '5432',
       database: process.env.DB_DATABASE || 'interviewdock',
       username: process.env.DB_USERNAME || 'postgres',
-      synchronize: process.env.DB_SYNCHRONIZE === 'true' || process.env.NODE_ENV === 'development',
+      migrations: 'enabled',
     });
 
     // Initialize database connection
     await AppDataSource.initialize();
     console.log('✅ Database connected successfully');
 
-    // Check if tables exist by running a simple query
-    try {
-      const categoryCount = await AppDataSource.query('SELECT COUNT(*) FROM categories');
-      console.log(`📊 Database check: ${categoryCount[0].count} categories found`);
-    } catch (err) {
-      console.warn('⚠️  Warning: Could not query categories table. Database may need to be seeded.');
-      console.warn('   Run: npm run seed');
+    // Run pending migrations
+    const pendingMigrations = await AppDataSource.showMigrations();
+    if (pendingMigrations) {
+      console.log('⚠️  Warning: There are pending migrations.');
+      console.log('   Run: npm run migration:run');
+    } else {
+      console.log('✅ All migrations are up to date');
     }
 
     // Create Express app
