@@ -84,3 +84,14 @@ export interface QuestionFilters {
   page?: number;
   limit?: number;
 }
+
+export interface Admin {
+  id: string;
+  userId: string;
+  name?: string;
+  isActive: boolean;
+  isSuperAdmin: boolean;
+  lastLoginAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}

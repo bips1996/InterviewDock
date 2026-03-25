@@ -43,4 +43,29 @@ export class TechnologyService {
     const technology = this.technologyRepository.create(data);
     return await this.technologyRepository.save(technology);
   }
+
+  async updateTechnology(
+    id: string,
+    data: Partial<{
+      name: string;
+      slug: string;
+      description: string;
+      icon: string;
+      categoryId: string;
+      order: number;
+    }>
+  ): Promise<Technology | null> {
+    const technology = await this.technologyRepository.findOne({ where: { id } });
+    if (!technology) {
+      return null;
+    }
+
+    Object.assign(technology, data);
+    return await this.technologyRepository.save(technology);
+  }
+
+  async deleteTechnology(id: string): Promise<boolean> {
+    const result = await this.technologyRepository.delete(id);
+    return result.affected !== 0;
+  }
 }

@@ -1,18 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Tag as TagIcon } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  Tag as TagIcon,
+  Edit2,
+  Trash2,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Question } from "@/types";
 import { questionApi } from "@/services/api";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { CodeBlock } from "@/components/CodeBlock";
+import { DeleteConfirmationModal } from "@/components/DeleteConfirmationModal";
+import { useAuthStore } from "@/store/useAuthStore";
 import "react-quill/dist/quill.snow.css";
 
 export const QuestionDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -47,6 +58,28 @@ export const QuestionDetailPage = () => {
     return /<\/?[a-z][\s\S]*>/i.test(decoded);
   };
 
+  const handleEdit = () => {
+    // Navigate to admin page with edit mode (you can pass state)
+    navigate("/admin", { state: { editQuestion: question } });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!question) return;
+
+    setDeleting(true);
+    try {
+      await questionApi.delete(question.id);
+      setDeleteModalOpen(false);
+      // Redirect to questions page after successful deletion
+      navigate("/questions");
+    } catch (error) {
+      console.error("Failed to delete question:", error);
+      alert("Failed to delete question. Please try again.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -73,14 +106,36 @@ export const QuestionDetailPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center text-gray-600 hover:text-gray-900 mb-6 transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </button>
+        {/* Header with Back Button and Admin Actions */}
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center text-gray-600 hover:text-gray-900 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </button>
+
+          {/* Admin Actions */}
+          {isAuthenticated && (
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={handleEdit}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <Edit2 className="h-4 w-4" />
+                <span>Edit</span>
+              </button>
+              <button
+                onClick={() => setDeleteModalOpen(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium"
+              >
+                <Trash2 className="h-4 w-4" />
+                <span>Delete</span>
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Question Card */}
         <div className="bg-white rounded-2xl border border-gray-200 shadow-xl overflow-hidden">
@@ -327,6 +382,16 @@ export const QuestionDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={handleDeleteConfirm}
+        questionNumber={question.questionNumber}
+        questionTitle={question.title}
+        loading={deleting}
+      />
     </div>
   );
 };
