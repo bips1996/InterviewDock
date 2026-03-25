@@ -4,6 +4,7 @@ import { Category } from '../entities/Category';
 import { Technology } from '../entities/Technology';
 import { Question } from '../entities/Question';
 import { Tag } from '../entities/Tag';
+import { Admin } from '../entities/Admin';
 
 dotenv.config();
 
@@ -16,7 +17,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE || 'interviewdock',
   synchronize: false, // Always use migrations, never use synchronize
   logging: process.env.DB_LOGGING === 'true' || process.env.NODE_ENV === 'development',
-  entities: [Category, Technology, Question, Tag],
+  entities: [Category, Technology, Question, Tag, Admin],
   migrations: [__dirname + '/../migrations/*{.ts,.js}'],
   subscribers: [],
   // Add connection retry logic

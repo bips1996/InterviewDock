@@ -1,24 +1,40 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { ChevronDown, ChevronUp, ThumbsUp, ThumbsDown } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  ChevronDown,
+  ChevronUp,
+  ThumbsUp,
+  ThumbsDown,
+  Edit2,
+  Trash2,
+} from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Question, PaginationMeta } from "@/types";
 import { questionApi } from "@/services/api";
 import { useAppStore } from "@/store/useAppStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { DifficultyBadge } from "@/components/DifficultyBadge";
 import { QuestionFilters } from "@/components/QuestionFilters";
 import { Sidebar } from "@/components/Sidebar";
 import { CodeBlock } from "@/components/CodeBlock";
+import { DeleteConfirmationModal } from "@/components/DeleteConfirmationModal";
 import "react-quill/dist/quill.snow.css";
 
 export const QuestionsPage = () => {
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [pagination, setPagination] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(true);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState<Question | null>(
+    null,
+  );
+  const [deleting, setDeleting] = useState(false);
 
   const { filters } = useAppStore();
+  const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     loadQuestions();
@@ -64,6 +80,37 @@ export const QuestionsPage = () => {
       );
     } catch (error) {
       console.error("Failed to dislike question:", error);
+    }
+  };
+
+  const handleEdit = (question: Question, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate("/admin", { state: { editQuestion: question } });
+  };
+
+  const handleDeleteClick = (question: Question, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setQuestionToDelete(question);
+    setDeleteModalOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!questionToDelete) return;
+
+    try {
+      setDeleting(true);
+      await questionApi.delete(questionToDelete.id);
+      // Remove the question from the list
+      setQuestions((prevQuestions) =>
+        prevQuestions.filter((q) => q.id !== questionToDelete.id),
+      );
+      setDeleteModalOpen(false);
+      setQuestionToDelete(null);
+    } catch (error) {
+      console.error("Failed to delete question:", error);
+      alert("Failed to delete question. Please try again.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -199,6 +246,28 @@ export const QuestionsPage = () => {
                                 <span className="font-medium">
                                   {question.technology.name}
                                 </span>
+                              </div>
+                            )}
+
+                            {/* Admin Actions */}
+                            {isAuthenticated && (
+                              <div className="flex items-center gap-1">
+                                <button
+                                  onClick={(e) => handleEdit(question, e)}
+                                  className="p-1.5 hover:bg-blue-100 text-blue-600 rounded-lg transition-colors"
+                                  title="Edit question"
+                                >
+                                  <Edit2 className="h-4 w-4" />
+                                </button>
+                                <button
+                                  onClick={(e) =>
+                                    handleDeleteClick(question, e)
+                                  }
+                                  className="p-1.5 hover:bg-red-100 text-red-600 rounded-lg transition-colors"
+                                  title="Delete question"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
                               </div>
                             )}
 
@@ -359,6 +428,21 @@ export const QuestionsPage = () => {
           </div>
         </main>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {questionToDelete && (
+        <DeleteConfirmationModal
+          isOpen={deleteModalOpen}
+          onClose={() => {
+            setDeleteModalOpen(false);
+            setQuestionToDelete(null);
+          }}
+          onConfirm={handleDeleteConfirm}
+          questionNumber={questionToDelete.questionNumber}
+          questionTitle={questionToDelete.title}
+          loading={deleting}
+        />
+      )}
     </div>
   );
 };

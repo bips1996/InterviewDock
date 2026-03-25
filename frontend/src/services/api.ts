@@ -6,6 +6,7 @@ import {
   QuestionFilters,
   PaginatedResponse,
   ApiResponse,
+  Admin,
 } from '@/types';
 
 export const categoryApi = {
@@ -50,6 +51,25 @@ export const technologyApi = {
     );
     return data.data;
   },
+
+  update: async (id: string, technology: Partial<{
+    name: string;
+    slug: string;
+    description: string;
+    icon: string;
+    categoryId: string;
+    order: number;
+  }>): Promise<Technology> => {
+    const { data } = await api.put<ApiResponse<Technology>>(
+      `/technologies/${id}`,
+      technology
+    );
+    return data.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/technologies/${id}`);
+  },
 };
 
 export const questionApi = {
@@ -80,6 +100,26 @@ export const questionApi = {
     );
     return data.data;
   },
+
+  update: async (id: string, question: Partial<{
+    title: string;
+    answer: string;
+    codeSnippet: string;
+    codeLanguage: string;
+    difficulty: string;
+    tags: string[];
+  }>): Promise<Question> => {
+    const { data } = await api.put<ApiResponse<Question>>(
+      `/questions/${id}`,
+      question
+    );
+    return data.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/questions/${id}`);
+  },
+
   like: async (id: string): Promise<Question> => {
     const { data } = await api.post<ApiResponse<Question>>(`/questions/${id}/like`);
     return data.data;
@@ -88,4 +128,38 @@ export const questionApi = {
   dislike: async (id: string): Promise<Question> => {
     const { data } = await api.post<ApiResponse<Question>>(`/questions/${id}/dislike`);
     return data.data;
-  },};
+  },
+};
+
+export const adminApi = {
+  getAll: async (): Promise<Admin[]> => {
+    const { data } = await api.get<ApiResponse<Admin[]>>('/auth/admins');
+    return data.data;
+  },
+
+  create: async (admin: {
+    userId: string;
+    pin: string;
+    name?: string;
+    isSuperAdmin?: boolean;
+  }): Promise<{ adminId: string }> => {
+    const { data } = await api.post<ApiResponse<{ adminId: string }>>('/auth/admins', admin);
+    return data.data;
+  },
+
+  update: async (id: string, admin: {
+    name?: string;
+    pin?: string;
+    isActive?: boolean;
+  }): Promise<void> => {
+    await api.put(`/auth/admins/${id}`, admin);
+  },
+
+  activate: async (id: string): Promise<void> => {
+    await api.patch(`/auth/admins/${id}/activate`);
+  },
+
+  deactivate: async (id: string): Promise<void> => {
+    await api.delete(`/auth/admins/${id}`);
+  },
+};
