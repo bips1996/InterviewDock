@@ -3,7 +3,7 @@ import { Shield, LogIn } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export const Header = () => {
-  const { isAuthenticated, admin } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
 
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50 shadow-sm">
